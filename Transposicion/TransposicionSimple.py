@@ -1,42 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-import Utilidad as util
-import threading
-import sys
-import os
-import time
 from itertools import zip_longest
 
-class Trasposicion(object):
-	def __init__(self, cadena):
+class TransposicionSimple(object):
+	def __init__(self, cadena=None):
 		self.cadena = cadena
 		self.bloque1 = list()
 		self.bloque2 = list()
 
-	def cifrarTexto(self):
+	def cifrar(self):
 		textoCifrado = ""
 		saltosLinea = len(self.cadena)-1
 		i = 0
 		for linea in self.cadena:
 			if i < saltosLinea:
 				textoCifrado = textoCifrado + self.__cifrarTexto(linea) + "\n"
-				i = i+1
+				i += 1
 			else:
 				textoCifrado = textoCifrado + self.__cifrarTexto(linea)
 		return textoCifrado
 
-	def descifrarTexto(self):
+	def descifrar(self):
 		textoDescifrado = ""
 		saltosLinea = len(self.cadena)-1
 		i = 0
 		for linea in self.cadena:
 			if i < saltosLinea:
 				textoDescifrado = textoDescifrado + self.__descifrarTexto(linea) + "\r\n"
-				i = i+1
+				i += 1
 			else:
 				textoDescifrado = textoDescifrado + self.__descifrarTexto(linea)
 		return textoDescifrado
+
+	#Métodos privados
 
 	def __cifrarTexto(self,linea):
 		i = 0
@@ -46,7 +43,7 @@ class Trasposicion(object):
 				self.bloque1.append(linea[i])
 			else:
 				self.bloque2.append(linea[i])
-			i = i+1
+			i += 1
 		textoBloque1 = ''.join(self.bloque1)
 		textoBloque2 = ''.join(self.bloque2)
 		textoCifrado = textoBloque1+textoBloque2
@@ -63,10 +60,10 @@ class Trasposicion(object):
 		#Llenar los bloques con sus mitades
 		while i < mitad:
 			self.bloque1.append(linea[i])
-			i = i+1
+			i += 1
 		while i < longitudCadena:
 			self.bloque2.append(linea[i])
-			i = i+1
+			i += 1
 
 		#Intercalar caracteres
 		textoClaro = []
@@ -87,32 +84,7 @@ class Trasposicion(object):
 	def __vaciarLista(self,lista):
 		del lista[:]
 
-
-#-----------------------------------------------------------------------------------------
-tiempo_ini = time.time()
-util = util.Utilidad()
-archivo = sys.argv[1]
-nombre, extension, cod, so = util.obtenerMetadatos(archivo)
-util.crearArchivoMetadatos(nombre, extension, cod, so)
-
-hilo = threading.Thread(target=util.resolverCodificacion(cod,"UTF-8",archivo,"tmp"))
-hilo.start()
-time.sleep(2/1000)
-#util.resolverCodificacion(cod,"UTF-8",archivo,"tmp")
-
-archivoUTF = open("./salida/tmp", "r")
-cadena = archivoUTF.read().split("\n")
-archivoUTF.close()
-os.remove("./salida/tmp")
-
-tSimple = Trasposicion(cadena)
-criptograma = tSimple.cifrarTexto()
-#print(criptograma)
-
-util.crearArchivoCifrado(nombre+extension,criptograma)
-tiempo_fin = time.time() - tiempo_ini
-print("Tiempo -> ",tiempo_fin)
-
+'''
 # ------------------------------------------------------------DESCIFRAR---------------------
 archivoCIF = open("./salida/"+nombre+extension+".CIF", "r")
 cadena = archivoCIF.read().split("\n")
@@ -129,3 +101,4 @@ time.sleep(2/1000)
 util.resolverCodificacion("UTF-8",cod, "./salida/tmp",nombre+extension)
 time.sleep(2/1000)
 os.remove("./salida/tmp")
+'''

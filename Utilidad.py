@@ -49,7 +49,6 @@ class Utilidad(object):
 		so = ""
 		with open(archivo, "rb") as archOrig:
 			saltoLinea = archOrig.read().split(b"\n")
-			print(saltoLinea)
 		archOrig.close()
 		if saltoLinea[0][-1] == 13:
 			so = "WINDOWS"
