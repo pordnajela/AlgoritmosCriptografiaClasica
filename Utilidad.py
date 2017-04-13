@@ -10,7 +10,6 @@ class Utilidad(object):
 	def __init__(self):
 		self.formatosTxt = ["ISO-8859-1","UTF-8"]
 		self.dirSalida = "./salida/"
-		self.saltosLinea = {"GNU/UNIX": "\n","WINDOWS":"\r\n"}
 
 	"""
 	Obtiene la codificación actual del archivo seleccionado, su nombre y extension.
@@ -46,14 +45,15 @@ class Utilidad(object):
 		nombre = direccion.split("/")[-1]
 
 		#Obtener sistema operativo según su Línea Nueva
-		so = ""
+		so = None
 		with open(archivo, "rb") as archOrig:
 			saltoLinea = archOrig.read().split(b"\n")
 		archOrig.close()
 		if saltoLinea[0][-1] == 13:
 			so = "WINDOWS"
 		else:
-			so = "GNU/UNIX"
+			if self.esTxt(codificacion):
+				so = "GNU/UNIX"
 
 		return nombre, extension, codificacion.upper(), so
 
@@ -70,36 +70,97 @@ class Utilidad(object):
 	def resolverCodificacion(self, codOrigen, codDestino, archivoOrigen, archivoDestino):
 		comando = "iconv -f "+codOrigen+" -t "+codDestino+" "+archivoOrigen+" > "+self.dirSalida+archivoDestino
 		charset1 = subprocess.Popen(comando,shell=True, stdout=subprocess.PIPE)
+		charset1.wait()
+
+	'''
+	Debido a que los archivos creados en WINDOWS tienen salto de líne CR (Carriage Return) y UNIX LF
+	este método permite corregir ese detalle.
+
+	Parámetros:
+	archivo: Archivo que se desea manipular
+	Más información ver < man unix2dos >
+	'''
+	def resolverSaltoLinea(self, archivo):
+		comando = "unix2dos -q "+archivo
+		charset1 = subprocess.Popen(comando,shell=True, stdout=subprocess.PIPE)
+		charset1.wait()		
 
 	"""
 	Permite saber si un archivo debe tratarse como un TXT (texto plano) o no según su codificación.
 
 	Parámetros:
-	codificación: 
+	codificación: Según la codificación se deduce si es TXT u otro tipo de archivo
 	"""
 	def esTxt(self, codificacion):
 		return codificacion in self.formatosTxt
 
 	"""
+	Permite crear archivos çon cualquier información
+
+	Parámetros:
+	archivo: Nombre del archivo a crear.
+	texto: Ínformación que se adjunta al archivo.
 	"""
-	def crearArchivoCifrado(self,archivo,texto):
-		archivo = open(self.dirSalida+archivo+".CIF","w")
-		archivo.write(texto)
+	def crearArchivo(self,archivo,texto, modo):
+		with open(self.dirSalida+archivo, modo) as archivo:
+			archivo.write(texto)
 		archivo.close()
 
 	"""
+	Permite crear el archivo de metadatos correspondiente al archivo a procesar.
+
+	Parámetros:
+	nombre: Nombre del archivo de metadatos a crear.
+	argumentos: Lista de datos que corresponden a los metadatos (es variable)
 	"""
-	def crearArchivoMetadatos(self,nombre,extension,codificacion,so):
-		archivo = open(self.dirSalida+nombre+".mdt","w")
-		archivo.write(nombre+"\n")
-		archivo.write(extension+"\n")
-		archivo.write(codificacion+"\n")
-		archivo.write(so)
+	def crearArchivoMetadatos(self, nombre, *argumentos):
+		with open(self.dirSalida+nombre+".mtd" , "w") as archivo:
+			for arg in list(argumentos):
+				archivo.write(arg+"\n")
 		archivo.close()
 
-	def comprobarHash(self,archivoOrigen, archivoDescifrado):
+	def removerEspacios(self):
 		pass
 
+	def comprobarHash(self,archivoOrigen, archivoDescifrado):
+		import hashlib
+		md5sum1 = hashlib.md5()
+		md5sum2 = hashlib.md5()
+		md5sum1.update(self.leerArchivo(archivoOrigen,"rb"))
+		md5sum2.update(self.leerArchivo(archivoDescifrado,"rb"))
+
+		return True if md5sum1.hexdigest() == md5sum2.hexdigest() else False
+
+	'''
+	Permite leer un archivo en memoria
+
+	Parámetros:
+	arch: Nombre del archivo a leer
+	modo: Tipo de lectura (rb , r , rU)
+	'''
+	def leerArchivo(self, arch, modo):
+		with open(arch, modo) as archivo:
+			dato = archivo.read()
+		archivo.close()
+		return dato
+
+	'''
+	Permite obtener la codificación en Base64 de un archivo
+
+	Parámetros:
+	archivo: Archivo que se desea obtener Base64
+	'''
+	def obtenerBase64(self, archivo):
+		with open(archivo, "rb") as archivoBin:
+			cadenaCodificadaBin = base64.b64encode(archivoBin.read())
+		archivoBin.close()
+		cadenaCodificada = cadenaCodificadaBin.decode("utf-8")
+		return cadenaCodificada
+
+	def cadenaBase64(self, texto):
+		cadenaBase64 = base64.b64encode(texto.encode("utf-8"))
+		print(cadenaBase64)
+		#return cadenaBase64
 '''
 def convertirBase64(textoUTF8):
 	cadenaBase64 = base64.b64encode(textoUTF8)

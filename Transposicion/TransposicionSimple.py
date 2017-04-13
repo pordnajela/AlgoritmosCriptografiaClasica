@@ -8,6 +8,8 @@ class TransposicionSimple(object):
 		self.cadena = cadena
 		self.bloque1 = list()
 		self.bloque2 = list()
+		self.textoCifrado = ""
+		self.textoClaro = ""
 
 	def cifrar(self):
 		textoCifrado = ""
@@ -19,19 +21,19 @@ class TransposicionSimple(object):
 				i += 1
 			else:
 				textoCifrado = textoCifrado + self.__cifrarTexto(linea)
-		return textoCifrado
+		self.textoCifrado = textoCifrado
 
-	def descifrar(self):
+	def descifrar(self, so):
 		textoDescifrado = ""
 		saltosLinea = len(self.cadena)-1
 		i = 0
 		for linea in self.cadena:
 			if i < saltosLinea:
-				textoDescifrado = textoDescifrado + self.__descifrarTexto(linea) + "\r\n"
+				textoDescifrado = textoDescifrado + self.__descifrarTexto(linea) + "\n"
 				i += 1
 			else:
 				textoDescifrado = textoDescifrado + self.__descifrarTexto(linea)
-		return textoDescifrado
+		self.textoClaro = textoDescifrado
 
 	#Métodos privados
 
@@ -83,22 +85,3 @@ class TransposicionSimple(object):
 
 	def __vaciarLista(self,lista):
 		del lista[:]
-
-'''
-# ------------------------------------------------------------DESCIFRAR---------------------
-archivoCIF = open("./salida/"+nombre+extension+".CIF", "r")
-cadena = archivoCIF.read().split("\n")
-archivoCIF.close()
-
-tSimple.cadena = cadena
-textoClaro = tSimple.descifrarTexto()
-
-archivoDES = open("./salida/tmp", "w")
-archivoDES.write(textoClaro)
-archivoDES.close()
-time.sleep(2/1000)
-
-util.resolverCodificacion("UTF-8",cod, "./salida/tmp",nombre+extension)
-time.sleep(2/1000)
-os.remove("./salida/tmp")
-'''
