@@ -23,7 +23,7 @@ class TransposicionSimple(object):
 				textoCifrado = textoCifrado + self.__cifrarTexto(linea)
 		self.textoCifrado = textoCifrado
 
-	def descifrar(self, so):
+	def descifrar(self):
 		textoDescifrado = ""
 		saltosLinea = len(self.cadena)-1
 		i = 0

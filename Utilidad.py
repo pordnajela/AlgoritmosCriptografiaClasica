@@ -30,7 +30,7 @@ class Utilidad(object):
 			print("El argumento debe ser un archivo, no una carpeta")
 			return 1
 
-		charset1 = subprocess.Popen("file -bi "+archivo+"| awk '{print $2}'",shell=True, stdout=subprocess.PIPE)
+		charset1 = subprocess.Popen("file -bi "+archivo+" | awk '{print $2}'",shell=True, stdout=subprocess.PIPE)
 		codificacion,err = charset1.communicate()
 
 		if err != None:
@@ -119,6 +119,7 @@ class Utilidad(object):
 				archivo.write(arg+"\n")
 		archivo.close()
 
+	#TO-DO
 	def removerEspacios(self):
 		pass
 
@@ -151,18 +152,12 @@ class Utilidad(object):
 	archivo: Archivo que se desea obtener Base64
 	'''
 	def obtenerBase64(self, archivo):
-		with open(archivo, "rb") as archivoBin:
-			cadenaCodificadaBin = base64.b64encode(archivoBin.read())
-		archivoBin.close()
-		cadenaCodificada = cadenaCodificadaBin.decode("utf-8")
+		cadena = self.leerArchivo(archivo, "rb")
+		cadenaCodificada = base64.b64encode(cadena)
+		cadenaCodificada = cadenaCodificada.decode()
 		return cadenaCodificada
 
-	def cadenaBase64(self, texto):
-		cadenaBase64 = base64.b64encode(texto.encode("utf-8"))
-		print(cadenaBase64)
-		#return cadenaBase64
-'''
-def convertirBase64(textoUTF8):
-	cadenaBase64 = base64.b64encode(textoUTF8)
-	return cadenaBase64, cadenaBase64.decode("utf-8")
-'''
+	def cadena_a_Base64(self, texto):
+		criptogramaB64 = texto.encode()
+		criptogramaBin = base64.b64decode(criptogramaB64)
+		return criptogramaBin
