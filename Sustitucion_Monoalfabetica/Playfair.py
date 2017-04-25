@@ -31,8 +31,7 @@ class Playfair(object):
         'd', 'e' 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
         'u', 'v', 'w', 'k', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+',
         '/']
-        
-        #self.alfabeto = [k.upper() for k in self.alfabeto]
+                
         self.textoCifrado = ""
         self.textoClaro = ""
         self.bandera = 0
@@ -82,13 +81,7 @@ class Playfair(object):
             b = 'X'
         d=self.div
         afila, acolumna = int(self.alfabeto.index(a) / d), self.alfabeto.index(a) % d
-        #print(afila)
-        #print(acolumna)
         bfila, bcolumna = int(self.alfabeto.index(b) / d), self.alfabeto.index(b) % d
-        #print(bfila)
-        #print(bcolumna)
-        #import time
-        #time.sleep(2)
         if afila == bfila:            
             return self.alfabeto[afila * d + (acolumna + 1) % d] + self.alfabeto[bfila * d + (bcolumna + 1) % d]
         elif acolumna == bcolumna:
@@ -101,7 +94,7 @@ class Playfair(object):
         pectivamente)        
         '''
         d=self.div
-        assert a != b, 'two of the same letters occurred together, illegal in playfair'
+        assert a != b 
         afila, acolumna = int(self.alfabeto.index(a) / d), self.alfabeto.index(a) % d
         bfila, bcolumna = int(self.alfabeto.index(b) / d), self.alfabeto.index(b) % d
         if afila == bfila:
@@ -126,14 +119,6 @@ class Playfair(object):
         return ret    
 
     def descifrar(self, string, relleno, clave):
-        """Se deebn ingresar caracteres validos dentro del alfabeto, si no es asi los
-        caracteres que no son validos seran rellenados con un X
-        Example::
-        plaintext = Playfair(key='zgptfoihmuwdrcnykeqaxvsbl').decipher(ciphertext)     
-        :param string: The string to decipher.
-        :returns: The deciphered string.
-        """    
-        #string = self.remove_punctuation(string) 
         self.cadena = string 
         if len(string) % 2 == 1:
             string += 'X'            

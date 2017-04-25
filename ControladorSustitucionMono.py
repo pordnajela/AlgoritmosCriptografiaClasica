@@ -45,7 +45,7 @@ class ControladorSustitucionMonoTemplate(object):
 		   Por ahora éste parámetro se utiliza para la Transposicion Doble.
 		"""
 		nombre, extension, codificacion, so = self.utilidad.obtenerMetadatos(archivo)
-		print(nombre, nombre, extension, codificacion, so)
+		#print(nombre, nombre, extension, codificacion, so)
 		self.utilidad.crearArchivoMetadatos(nombre, nombre, extension, codificacion, so)
 		
 		self.utilidad.resolverCodificacion(codificacion, "UTF-8", archivo, "tmp")
@@ -202,7 +202,7 @@ class ControladorCesarSD(ControladorSustitucionMonoTemplate):
 
 		self.cesar.cadena = cadena
 		largo = len(cadena)
-		print(largo-1)
+		#print(largo-1)
 		for x in range(0, largo):			
 			if(x<largo):
 				self.cesar.textoCifrado= self.cesar.textoCifrado + self.cesar.cifrar(cadena[x], cantidadRellenoB64, clave) + "\n"
@@ -226,7 +226,7 @@ class ControladorCesarSD(ControladorSustitucionMonoTemplate):
 			
 		self.cesar.cadena = cadena
 		largo = len(cadena)
-		print(largo)
+		#print(largo)
 		for x in range(0, largo):
 			if(x<largo):
 				self.cesar.textoClaro= self.cesar.textoClaro + self.cesar.descifrar(cadena[x], cantidadRellenoB64, clave) + "\n" 
@@ -242,7 +242,7 @@ class ControladorCesarSD(ControladorSustitucionMonoTemplate):
 		try:
 			argumentos = list(argumentos)
 			alfabeto = argumentos[0]
-			print (alfabeto)
+			#print (alfabeto)
 		except IndexError:
 			alfabeto = "B64"
 		self.cesar.definirAlfabeto(alfabeto)
@@ -268,7 +268,7 @@ class ControladorPlayfairSD(ControladorSustitucionMonoTemplate):
 
 		self.playfair.cadena = cadena
 		largo = len(cadena)
-		print(largo-1)
+		#print(largo-1)
 		for x in range(0, largo):
 			if(x<largo):
 				self.playfair.textoCifrado= self.playfair.textoCifrado + self.playfair.cifrar(cadena[x], cantidadRellenoB64, clave) + "\n"
@@ -290,12 +290,12 @@ class ControladorPlayfairSD(ControladorSustitucionMonoTemplate):
 		#return self.playfair.descifrar(cadena[0], cantidadRelleno, clave)
 		self.playfair.cadena = cadena
 		largo = len(cadena)
-		print(largo)
+		#print(largo)
 		for x in range(0, largo):
-			print('x:')
-			print(x)
-			print('largo:')
-			print(largo)
+			#print('x:')
+			#print(x)
+			#print('largo:')
+			#print(largo)
 			if(x<largo):
 				self.playfair.textoClaro= self.playfair.textoClaro + self.playfair.descifrar(cadena[x], cantidadRellenoB64, clave) + "\n" 
 			else:
@@ -322,7 +322,7 @@ class ControladorPolybiosSD(ControladorSustitucionMonoTemplate):
 	def modoCifrar(self, *argumentos):
 		try:
 			argumentos = list(argumentos)
-			print (argumentos[0])	
+			#print (argumentos[0])	
 			cadena = argumentos[0]	
 			cantidadRellenoB64 = argumentos[1]
 			clave = argumentos[2]			 
@@ -331,7 +331,7 @@ class ControladorPolybiosSD(ControladorSustitucionMonoTemplate):
 
 		self.polybios.cadena = cadena
 		largo = len(cadena)
-		print(largo-1)
+		#print(largo-1)
 		for x in range(0, largo):
 			if(x<largo):
 				self.polybios.textoCifrado= self.polybios.textoCifrado + self.polybios.cifrar(cadena[x], cantidadRellenoB64, clave) + "\n"
@@ -353,7 +353,7 @@ class ControladorPolybiosSD(ControladorSustitucionMonoTemplate):
 		self.polybios.cadena = cadena
 		#self.cesar.cifrar(cadena[0], cantidadRellenoB64, clave)
 		largo = len(cadena)
-		print(largo)
+		#print(largo)
 		for x in range(0, largo):
 			if(x<largo):
 				self.polybios.textoClaro= self.polybios.textoClaro + self.polybios.descifrar(cadena[x], cantidadRellenoB64, clave) + "\n"
@@ -365,7 +365,7 @@ class ControladorPolybiosSD(ControladorSustitucionMonoTemplate):
 		try:
 			argumentos = list(argumentos)
 			alfabeto = argumentos[0]
-			print (alfabeto)
+			#print (alfabeto)
 		except IndexError:
 			alfabeto = "B64"
 		self.polybios.definirAlfabeto(alfabeto)
@@ -382,27 +382,23 @@ archivo = sys.argv[1]
 #cJC.definirAlfabeto("es_may")
 #cJC.definirAlfabeto("B64")
 #cJC.cifrarTexto(archivo, 0, 2)
-#cJC.descifrarTexto("./salida/binarioCR.txt.CIF", 0, 2)
+#cJC.descifrarTexto("./salida/prueba.txt.CIF", 0, 2)
 #cJC.cifrarArchivo(archivo, 0, 2)
 #cJC.descifrarArchivo("./salida/informatica.jpg.CIF", 0, 2)
 #cJC.descifrarArchivo("./salida/binarioCR.txt.CIF", 0, 2)
 
 #Pruebas Playfair
-cPF = ControladorPlayfairSD()
-cPF.definirAlfabeto("es_may")
-cPF.cifrarTexto(archivo, 0, 'VWXY')
-cPF.descifrarTexto("./salida/binarioPF.txt.CIF", 0, 'VWXY')
+#cPF = ControladorPlayfairSD()
+#cPF.definirAlfabeto("es_may")
+#cPF.cifrarTexto(archivo, 0, 'VWXY')
+#cPF.descifrarTexto("./salida/pruebaPF.txt.CIF", 0, 'VWXY')
 #cPF.cifrarArchivo(archivo, 0, 'VWXY')
-#cPF.descifrarArchivo("./salida/binarioPF.txt.CIF", 0, 'VWXY')
+#cPF.descifrarArchivo("./salida/prueba.txt.CIF", 0, 'VWXY')
 
 #Pruebas Polybios
-#cPB = ControladorPolybiosSD()
-#cPB.definirAlfabeto("en_may")
-#cPB.cifrarTexto(archivo, 0, 4)
-#cPB.descifrarTexto("./salida/binarioPB.txt.CIF", 0, 4)
-
-#cG = ControladorTransposicionGrupo(43521)
-
-#cG.cifrarTexto(archivo)
-#cG.descifrarTexto("./salida/PRUEBA.txt.CIF")
-#cG.cifrarArchivo(archivo)
+cPB = ControladorPolybiosSD()
+cPB.definirAlfabeto("en_may")
+cPB.cifrarTexto(archivo, 0, 4)
+cPB.descifrarTexto("./salida/pruebaPB.txt.CIF", 0, 4)
+#cPB.cifrarArchivo(archivo, 0, 'VWXY')
+#cPB.descifrarArchivo("./salida/prueba.txt.CIF", 0, 'VWXY')
