@@ -11,35 +11,35 @@ class TransposicionSimple(object):
 		self.textoCifrado = ""
 		self.textoClaro = ""
 
-	def cifrar(self):
+	def cifrar(self, cantidadRelleno=0):
 		textoCifrado = ""
 		saltosLinea = len(self.cadena)-1
 		i = 0
 		for linea in self.cadena:
 			if i < saltosLinea:
-				textoCifrado = textoCifrado + self.__cifrarTexto(linea) + "\n"
+				textoCifrado = textoCifrado + self.__cifrarTexto(linea, cantidadRelleno) + "\n"
 				i += 1
 			else:
-				textoCifrado = textoCifrado + self.__cifrarTexto(linea)
+				textoCifrado = textoCifrado + self.__cifrarTexto(linea, cantidadRelleno)
 		self.textoCifrado = textoCifrado
 
-	def descifrar(self):
+	def descifrar(self, cantidadRelleno=0):
 		textoDescifrado = ""
 		saltosLinea = len(self.cadena)-1
 		i = 0
 		for linea in self.cadena:
 			if i < saltosLinea:
-				textoDescifrado = textoDescifrado + self.__descifrarTexto(linea) + "\n"
+				textoDescifrado = textoDescifrado + self.__descifrarTexto(linea, cantidadRelleno) + "\n"
 				i += 1
 			else:
-				textoDescifrado = textoDescifrado + self.__descifrarTexto(linea)
+				textoDescifrado = textoDescifrado + self.__descifrarTexto(linea, cantidadRelleno)
 		self.textoClaro = textoDescifrado
 
-	#Métodos privados
+	#------------------------------------------------------------------- Métodos privados
 
-	def __cifrarTexto(self,linea):
+	def __cifrarTexto(self,linea, cantidadRelleno=0):
 		i = 0
-		longitudCadena = len(linea)
+		longitudCadena = len(linea)-cantidadRelleno
 		while i < longitudCadena:
 			if i%2 == 0:
 				self.bloque1.append(linea[i])
@@ -49,14 +49,17 @@ class TransposicionSimple(object):
 		textoBloque1 = ''.join(self.bloque1)
 		textoBloque2 = ''.join(self.bloque2)
 		textoCifrado = textoBloque1+textoBloque2
+		while cantidadRelleno > 0:
+			textoCifrado += "="
+			cantidadRelleno -= 1
 
 		self.__vaciarLista(self.bloque1)
 		self.__vaciarLista(self.bloque2)
 		return textoCifrado
 
-	def __descifrarTexto(self,linea):
+	def __descifrarTexto(self,linea, cantidadRelleno=0):
 		i = 0
-		longitudCadena = len(linea)
+		longitudCadena = len(linea)-cantidadRelleno
 		mitad = longitudCadena/2
 
 		#Llenar los bloques con sus mitades
@@ -81,7 +84,11 @@ class TransposicionSimple(object):
 				textoClaro.append(b)
 		self.__vaciarLista(self.bloque1)
 		self.__vaciarLista(self.bloque2)
-		return ''.join(textoClaro)
+		textoClaro = ''.join(textoClaro)
+		while cantidadRelleno > 0:
+			textoClaro += "="
+			cantidadRelleno -= 1
+		return textoClaro
 
 	def __vaciarLista(self,lista):
 		del lista[:]
