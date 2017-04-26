@@ -4,12 +4,13 @@
 class TransposicionGrupo(object):
 	"""
 	"""
-	def __init__(self, cadena=None, clave=None):
+	def __init__(self, cadena=None, clave=None, archivoOriginal=None):
 		self.cadena = cadena #Recibe una lista, la longitud de cada elemento es a longitud de la clave
+		self.archivoOriginal = archivoOriginal
 		self.clave = clave
 		self.textoClaro = ""
 		self.textoCifrado = ""
-		self.caracterRelleno = "=" #₫
+		self.caracterRelleno = "0" #₫
 
 	def cifrar(self, cantidadRellenoB64=0):
 		textoCifrado = ""
@@ -23,7 +24,6 @@ class TransposicionGrupo(object):
 				i += 1
 			else:
 				linea_a_cifrar = self.dividirGrupos(linea, cantidadRellenoB64)
-				#print(linea_a_cifrar)
 				textoCifrado = textoCifrado + self.__cifrar(linea_a_cifrar)
 		
 		self.textoCifrado = textoCifrado
@@ -35,7 +35,7 @@ class TransposicionGrupo(object):
 		i = 0
 		for linea in self.cadena:
 			if i < saltosLinea:
-				linea_a_descifrar = self.dividirGrupos(linea, cantidadRellenoB64)
+				linea_a_descifrar = self.dividirGrupos(linea)
 				textoDescifrado = textoDescifrado + self.__descifrar(linea_a_descifrar) + "\n"
 				i += 1
 			else:
@@ -43,7 +43,6 @@ class TransposicionGrupo(object):
 				textoDescifrado = textoDescifrado + self.__descifrar(linea_a_descifrar)
 
 		self.textoClaro = textoDescifrado
-		self.textoClaro = self.quitarCaracterRelleno(self.textoClaro)
 	
 	#---------------------------------------------------------- Métodos complementarios
 	def dividirGrupos(self, linea, cantidadRellenoB64=0):
@@ -106,11 +105,6 @@ class TransposicionGrupo(object):
 
 		bloqueDescifrado = ''.join(bloqueDescifrado)
 		return bloqueDescifrado
-
-	def quitarCaracterRelleno(self, cadena, cantidadRellenoB64=0):
-		i = len(cadena)
-		j = cadena.index(self.caracterRelleno)
-		return cadena[:(j-i)]+"\n"
 	
 	#----------------------------------------------------------------- Métodos privados
 	def __cifrar(self, linea_a_cifrar, cantidadRellenoB64=0):
@@ -119,10 +113,6 @@ class TransposicionGrupo(object):
 			lineaNueva.append(self.intercambiar_cifrar(bloque, self.clave))
 
 		lineaNueva = ''.join(lineaNueva)
-		while cantidadRellenoB64 > 0:
-			lineaNueva += "="
-			cantidadRellenoB64 -= 1
-
 		return lineaNueva
 	
 	def __descifrar(self, linea_a_descifrar, cantidadRellenoB64=0):
@@ -131,9 +121,4 @@ class TransposicionGrupo(object):
 			lineaNueva.append(self.intercambiar_descifrar(bloque, self.clave))
 
 		lineaNueva = ''.join(lineaNueva)
-
-		while cantidadRellenoB64 > 0:
-			lineaNueva += "="
-			cantidadRellenoB64 -= 1
-
 		return lineaNueva

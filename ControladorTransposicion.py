@@ -4,7 +4,6 @@
 import os
 import sys
 
-
 from Utilidad import Utilidad
 from Transposicion.TransposicionSimple import TransposicionSimple
 from Transposicion.TransposicionGrupo import TransposicionGrupo
@@ -21,6 +20,9 @@ class ControladorTransposicionTemplate(object):
 	a utilzar, estos se definen en las clases concretas.
 
 	"""
+	def __init__(self):
+	    self.utilidad = Utilidad()
+
 	def modoCifrar(self, *argumentos):
 		raise NotImplementedError
 	
@@ -41,13 +43,17 @@ class ControladorTransposicionTemplate(object):
 		self.utilidad.crearArchivoMetadatos(nombre, nombre, extension, codificacion, so)
 		self.utilidad.resolverCodificacion(codificacion, "UTF-8", archivo, "tmp")
 
-		cadena = self.utilidad.leerArchivo(self.utilidad.dirSalida+"tmp","r")
+		cadena_aux = self.utilidad.leerArchivo(self.utilidad.dirSalida+"tmp","r")
 		os.remove(self.utilidad.dirSalida+"tmp")
-		cadena = cadena.split("\n")
+		cadena = cadena_aux.split("\n")
 
 		criptograma = self.modoCifrar(cadena, n)
 
 		self.utilidad.crearArchivo(nombre+extension+".CIF", criptograma, "w")
+
+		cantidadRelleno = len(criptograma) - len(cadena_aux)
+		if cantidadRelleno > 0:
+			self.utilidad.crearArchivo(nombre+".mtd", str(cantidadRelleno), "a")
 
 	def descifrarTexto(self, archivo, n=None):
 		"""
@@ -58,8 +64,7 @@ class ControladorTransposicionTemplate(object):
 		n: la cantidad de iteraciones con la que se desea descifrar el archivo plano.
 		   Por ahora éste parámetro se utiliza para la Transposicion Doble.
 		"""
-		metadatos = self.__obtenerArchivoMetadatos(archivo)
-		metadatos = metadatos.split("\n")
+		metadatos = self.obtenerArchivoMetadatos(archivo)
 		nombre = metadatos[0]
 		extension = metadatos[1]
 		codificacion = metadatos[2]
@@ -87,15 +92,16 @@ class ControladorTransposicionTemplate(object):
 			self.utilidad.crearArchivoMetadatos(nombre, nombre, extension, codificacion, so)
 		except TypeError:
 			pass
-
+		
 		cadenaB64 = self.utilidad.obtenerBase64(archivo)
-		cantidadRellenoB64 = len(cadenaB64)-cadenaB64.index("=")
 		cadena = list()
 		cadena.append(cadenaB64)
+		criptograma = self.modoCifrar(cadena, n, 0)
+		self.utilidad.crearArchivo(nombre+extension+".CIF", criptograma.encode(), "wb")
 
-		criptograma = self.modoCifrar(cadena, n, cantidadRellenoB64)
-		criptograma = self.utilidad.cadena_a_Base64(criptograma)
-		self.utilidad.crearArchivo(nombre+extension+".CIF", criptograma, "wb")
+		cantidadRelleno = len(criptograma) - len(cadenaB64)
+		if cantidadRelleno > 0:
+			self.utilidad.crearArchivo(nombre+".mtd", str(cantidadRelleno), "a")
 	
 	def descifrarArchivo(self, archivo, n=None):
 		"""
@@ -107,27 +113,22 @@ class ControladorTransposicionTemplate(object):
 		   Por ahora éste parámetro se utiliza para la Transposicion Doble.
 		"""
 		try:
-			metadatos = self.__obtenerArchivoMetadatos(archivo)
-			metadatos = metadatos.split("\n")
+			metadatos = self.obtenerArchivoMetadatos(archivo)
 			nombre = metadatos[0]
 			extension = metadatos[1]
-			#codificacion = metadatos[2]
 		except TypeError as te:
-			print(te , " descifrarArchivoTemplate")
-			#codificacion = None
+			print(te , " descifrarArchivo -- Template")
 
-		cadenaB64 = self.utilidad.obtenerBase64(self.utilidad.dirSalida+nombre+extension+".CIF")
-		cantidadRellenoB64 = len(cadenaB64)-cadenaB64.index("=")
+		cadenaB64 = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+extension+".CIF", "r")
 		cadena = list()
 		cadena.append(cadenaB64)
 
-		textoClaro = self.modoDescifrar(cadena, n, cantidadRellenoB64)
+		textoClaro = self.modoDescifrar(cadena, n, 0)
 		textoClaro = self.utilidad.cadena_a_Base64(textoClaro)
-
 		self.utilidad.crearArchivo(nombre+extension, textoClaro, "wb")
-	
-	#-----------------------------------------------------------------------------Métodos privados
-	def __obtenerArchivoMetadatos(self, archivo):
+			
+	#-----------------------------------------------------------------------------Métodos adicionales
+	def obtenerArchivoMetadatos(self, archivo):
 		"""
 		Método que se encarga de obtener los metadatos del archivo (tanto texto como binario)
 		para poder realizar el proceso de descifrado.
@@ -139,7 +140,7 @@ class ControladorTransposicionTemplate(object):
 
 		#Leer el archivo de metadatos -> metadatos = [nombre, extension, codificacion, so]
 		metadatos = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r")
-		return metadatos
+		return metadatos.split("\n")
 	
 	def __crearArchivoDescifrado(self, textoClaro, codificacion, nombre, extension):
 		"""
@@ -165,8 +166,8 @@ class ControladorTransposicionSD(ControladorTransposicionTemplate):
 	Clase concreta que va a implementar el modoCifrar y modoDescifrar de la clase Template.
 	"""
 	def __init__(self):
-		self.tSimple = TransposicionSimple()
-		self.utilidad = Utilidad()
+	    super(ControladorTransposicionSD, self).__init__()
+	    self.tSimple = TransposicionSimple()
 	
 	def modoCifrar(self, *argumentos):
 		try:
@@ -204,56 +205,60 @@ class ControladorTransposicionSD(ControladorTransposicionTemplate):
 
 		return self.tSimple.textoClaro
 
+	#------------------------------------------------------------------------------------------------
+
 class ControladorTransposicionGrupo(ControladorTransposicionTemplate):
 	"""
 	Clase concreta que va a implementar el modoCifrar y modoDescifrar de la clase Template.
 	"""
-	def __init__(self, clave):
-		self.utilidad = Utilidad()
-		self.tGrupo = TransposicionGrupo(None, clave)
+	def __init__(self, clave, archivoOriginal):
+		super(ControladorTransposicionGrupo, self).__init__()
+		self.tGrupo = TransposicionGrupo(None, clave, archivoOriginal)
 
 	def modoCifrar(self, *argumentos):
 		try:
 			argumentos = list(argumentos)
 			cadena = argumentos[0]
-			cantidadRellenoB64 = argumentos[2]
 		except IndexError:
-			cantidadRellenoB64 = 0
+			pass
 
-		if cantidadRellenoB64 != 0:
-			cadena2 = cadena[0]
-			j = cadena2.index("=")
-			cadena2 = cadena2[:j]
-			while (len(cadena2) % len(str(self.tGrupo.clave)) != 0):
-				cadena2 += "A"
-			cadena.append(cadena2)
-			del cadena[:]
-			cadena.append(cadena2)
-			print(cadena)
-		
 		self.tGrupo.cadena = cadena
-		print(self.tGrupo.cadena)
-		self.tGrupo.cifrar(cantidadRellenoB64)
+		self.tGrupo.cifrar()	
 		return self.tGrupo.textoCifrado
 
 	def modoDescifrar(self, *argumentos):
 		try:
 			argumentos = list(argumentos)
 			cadena = argumentos[0]
-			cantidadRellenoB64 = argumentos[2]
 		except IndexError:
-			cantidadRellenoB64 = 0
-		
+			pass
+
+		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.tGrupo.archivoOriginal)[0]
+		relleno = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r").split("\n")[-1]
+		codificacion = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r").split("\n")[2]
+
 		self.tGrupo.cadena = cadena
-		self.tGrupo.descifrar(cantidadRellenoB64)
+		self.tGrupo.descifrar()
+
+		cadena = self.tGrupo.textoClaro
+		if self.utilidad.esTxt(codificacion):
+			limite = ( len(cadena)-int(relleno) ) -1
+		else:
+			limite = ( len(cadena)-int(relleno) )
+
+		cadena = cadena[:limite]+"\n"
+		self.tGrupo.textoClaro = cadena
+
 		return self.tGrupo.textoClaro
+
+	#------------------------------------------------------------------------------------------------
 
 class ControladorTransposicionSerie(ControladorTransposicionTemplate):
 	"""
 	Clase concreta que va a implementar el modoCifrar y modoDescifrar de la clase Template.
 	"""
 	def __init__(self, arg):
-		self.utilidad = Utilidad()
+		super(ControladorTransposicionSD, self).__init__()
 	
 	def modoCifrar(self, *argumentos):
 		pass
@@ -265,9 +270,11 @@ archivo = sys.argv[1]
 cSD = ControladorTransposicionSD()
 #cSD.cifrarTexto(archivo,0)
 #cSD.descifrarTexto("./salida/PRUEBA.txt.CIF",0)
-cSD.cifrarArchivo(archivo,0)
-cSD.descifrarArchivo("./salida/Crepusculo.pdf.CIF",0)
-cG = ControladorTransposicionGrupo(43521)
+#cSD.cifrarArchivo(archivo,0)
+#cSD.descifrarArchivo("./salida/Crepusculo.pdf.CIF",0)
+cG = ControladorTransposicionGrupo(43521, archivo)
 #cG.cifrarTexto(archivo)
 #cG.descifrarTexto("./salida/PRUEBA.txt.CIF")
 #cG.cifrarArchivo(archivo)
+#cG.descifrarArchivo("./salida/Crepusculo.pdf.CIF")
+cS = ControladorTransposicionSerie()

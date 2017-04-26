@@ -49,9 +49,7 @@ class TransposicionSimple(object):
 		textoBloque1 = ''.join(self.bloque1)
 		textoBloque2 = ''.join(self.bloque2)
 		textoCifrado = textoBloque1+textoBloque2
-		while cantidadRelleno > 0:
-			textoCifrado += "="
-			cantidadRelleno -= 1
+		textoCifrado = self.__adicionarRellenoB64(textoCifrado, cantidadRelleno)
 
 		self.__vaciarLista(self.bloque1)
 		self.__vaciarLista(self.bloque2)
@@ -85,10 +83,15 @@ class TransposicionSimple(object):
 		self.__vaciarLista(self.bloque1)
 		self.__vaciarLista(self.bloque2)
 		textoClaro = ''.join(textoClaro)
-		while cantidadRelleno > 0:
-			textoClaro += "="
-			cantidadRelleno -= 1
+		textoClaro = self.__adicionarRellenoB64(textoClaro, cantidadRelleno)
+
 		return textoClaro
 
+	def __adicionarRellenoB64(self, texto, cantidadRelleno):
+		while cantidadRelleno > 0:
+			texto += "="
+			cantidadRelleno -= 1
+		return texto
+		
 	def __vaciarLista(self,lista):
 		del lista[:]
