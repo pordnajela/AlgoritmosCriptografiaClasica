@@ -7,6 +7,7 @@ import sys
 from Utilidad import Utilidad
 from Transposicion.TransposicionSimple import TransposicionSimple
 from Transposicion.TransposicionGrupo import TransposicionGrupo
+from Transposicion.TransposicionSerie import TransposicionSerie
 
 class ControladorTransposicionTemplate(object):
 	"""
@@ -34,7 +35,7 @@ class ControladorTransposicionTemplate(object):
 		Método que se encarga de cifrar un archivo de texto (archvo plano).
 
 		Parámetros:
-		archivo: archivo plano que se desea cifrar.
+		archivo: Dirección del archivo plano que se desea cifrar.
 		n: la cantidad de iteraciones con la que se desea cifrar el archivo plano.
 		   Por ahora éste parámetro se utiliza para la Transposicion Doble.
 		"""
@@ -60,7 +61,7 @@ class ControladorTransposicionTemplate(object):
 		Método que se encarga de descifrar un archivo de texto (archvo plano).
 
 		Parámetros:
-		archivo: archivo plano que se desea descifrar.
+		archivo: Dirección del archivo plano que se desea descifrar.
 		n: la cantidad de iteraciones con la que se desea descifrar el archivo plano.
 		   Por ahora éste parámetro se utiliza para la Transposicion Doble.
 		"""
@@ -82,7 +83,7 @@ class ControladorTransposicionTemplate(object):
 		Método que se encarga de cifrar un archivo con codificación binaria.
 
 		Parámetros:
-		archivo: archivo plano que se desea descifrar.
+		archivo: Dirección del archivo plano que se desea descifrar.
 		n: la cantidad de iteraciones con la que se desea cifrar el archivo plano.
 		   Por ahora éste parámetro se utiliza para la Transposicion Doble.
 		"""
@@ -108,7 +109,7 @@ class ControladorTransposicionTemplate(object):
 		Método que se encarga de descifrar un archivo con codificación binaria.
 
 		Parámetros:
-		archivo: archivo plano que se desea descifrar.
+		archivo: Dirección del archivo plano que se desea descifrar.
 		n: la cantidad de iteraciones con la que se desea descifrar el archivo plano.
 		   Por ahora éste parámetro se utiliza para la Transposicion Doble.
 		"""
@@ -257,8 +258,9 @@ class ControladorTransposicionSerie(ControladorTransposicionTemplate):
 	"""
 	Clase concreta que va a implementar el modoCifrar y modoDescifrar de la clase Template.
 	"""
-	def __init__(self, arg):
-		super(ControladorTransposicionSD, self).__init__()
+	def __init__(self, series):
+		super(ControladorTransposicionSerie, self).__init__()
+		self.tSerie = TransposicionSerie(series)
 	
 	def modoCifrar(self, *argumentos):
 		pass
@@ -278,3 +280,4 @@ cG = ControladorTransposicionGrupo(43521, archivo)
 #cG.cifrarArchivo(archivo)
 #cG.descifrarArchivo("./salida/Crepusculo.pdf.CIF")
 cS = ControladorTransposicionSerie()
+cS.cifrarTexto()

@@ -7,7 +7,7 @@ import base64
 
 class Utilidad(object):
 	def __init__(self):
-		self.formatosTxt = ["ISO-8859-1","UTF-8"]
+		self.formatosTxt = ["ISO-8859-1","UTF-8", "US-ASCII"]
 		self.dirSalida = "./salida/"
 
 	def obtenerMetadatos(self, archivo):
@@ -37,7 +37,7 @@ class Utilidad(object):
 			return 1
 		else:
 			codificacion = codificacion.decode("utf-8")
-			codificacion = codificacion.split("=")[1].strip("\n")
+			codificacion = codificacion.split("=")[1].strip("\n").upper()
 
 		#Obtener nombre y extension
 		direccion, extension = os.path.splitext(archivo)
