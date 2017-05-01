@@ -4,9 +4,8 @@
 class TransposicionGrupo(object):
 	"""
 	"""
-	def __init__(self, cadena=None, clave=None, archivoOriginal=None):
+	def __init__(self, cadena=None, clave=None):
 		self.cadena = cadena #Recibe una lista, la longitud de cada elemento es a longitud de la clave
-		self.archivoOriginal = archivoOriginal
 		self.clave = clave
 		self.textoClaro = ""
 		self.textoCifrado = ""

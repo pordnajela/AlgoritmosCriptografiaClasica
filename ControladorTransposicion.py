@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import os
-import sys
+#import sys
 
 from Utilidad import Utilidad
 from Transposicion.TransposicionSimple import TransposicionSimple
@@ -19,10 +19,9 @@ class ControladorTransposicionTemplate(object):
 
 	Los métodos modoCifrar y modoDescifrar, son los métodos que van a cambiar según el algoritmo
 	a utilzar, estos se definen en las clases concretas.
-
 	"""
 	def __init__(self):
-	    self.utilidad = Utilidad()
+		self.utilidad = Utilidad()
 
 	def modoCifrar(self, *argumentos):
 		raise NotImplementedError
@@ -30,7 +29,7 @@ class ControladorTransposicionTemplate(object):
 	def modoDescifrar(self, *argumentos):
 		raise NotImplementedError
 	
-	def cifrarTexto(self, archivo, n=None):
+	def cifrarTexto(self, archivo):
 		"""
 		Método que se encarga de cifrar un archivo de texto (archvo plano).
 
@@ -48,7 +47,7 @@ class ControladorTransposicionTemplate(object):
 		os.remove(self.utilidad.dirSalida+"tmp")
 		cadena = cadena_aux.split("\n")
 
-		criptograma = self.modoCifrar(cadena, n)
+		criptograma = self.modoCifrar(cadena)
 
 		self.utilidad.crearArchivo(nombre+extension+".CIF", criptograma, "w")
 
@@ -56,7 +55,7 @@ class ControladorTransposicionTemplate(object):
 		if cantidadRelleno > 0:
 			self.utilidad.crearArchivo(nombre+".mtd", str(cantidadRelleno), "a")
 
-	def descifrarTexto(self, archivo, n=None):
+	def descifrarTexto(self, archivo):
 		"""
 		Método que se encarga de descifrar un archivo de texto (archvo plano).
 
@@ -74,11 +73,11 @@ class ControladorTransposicionTemplate(object):
 		cadena = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+extension+".CIF","r")
 		cadena = cadena.split("\n")
 
-		textoClaro = self.modoDescifrar(cadena, n)
+		textoClaro = self.modoDescifrar(cadena)
 		self.__crearArchivoDescifrado(textoClaro, codificacion, nombre, extension)
 		self.__resolverSaltoLinea(nombre,extension,so)
 	
-	def cifrarArchivo(self, archivo, n=None):
+	def cifrarArchivo(self, archivo):
 		"""
 		Método que se encarga de cifrar un archivo con codificación binaria.
 
@@ -97,14 +96,14 @@ class ControladorTransposicionTemplate(object):
 		cadenaB64 = self.utilidad.obtenerBase64(archivo)
 		cadena = list()
 		cadena.append(cadenaB64)
-		criptograma = self.modoCifrar(cadena, n, 0)
+		criptograma = self.modoCifrar(cadena)
 		self.utilidad.crearArchivo(nombre+extension+".CIF", criptograma.encode(), "wb")
 
 		cantidadRelleno = len(criptograma) - len(cadenaB64)
-		if cantidadRelleno > 0:
-			self.utilidad.crearArchivo(nombre+".mtd", str(cantidadRelleno), "a")
+		#if cantidadRelleno > 0:
+		self.utilidad.crearArchivo(nombre+".mtd", str(cantidadRelleno), "a")
 	
-	def descifrarArchivo(self, archivo, n=None):
+	def descifrarArchivo(self, archivo):
 		"""
 		Método que se encarga de descifrar un archivo con codificación binaria.
 
@@ -124,7 +123,7 @@ class ControladorTransposicionTemplate(object):
 		cadena = list()
 		cadena.append(cadenaB64)
 
-		textoClaro = self.modoDescifrar(cadena, n, 0)
+		textoClaro = self.modoDescifrar(cadena)
 		textoClaro = self.utilidad.cadena_a_Base64(textoClaro)
 		self.utilidad.crearArchivo(nombre+extension, textoClaro, "wb")
 			
@@ -166,25 +165,28 @@ class ControladorTransposicionSD(ControladorTransposicionTemplate):
 	"""
 	Clase concreta que va a implementar el modoCifrar y modoDescifrar de la clase Template.
 	"""
-	def __init__(self):
-	    super(ControladorTransposicionSD, self).__init__()
-	    self.tSimple = TransposicionSimple()
+	def __init__(self, n=None, archivoOriginal=None):
+		super(ControladorTransposicionSD, self).__init__()
+		self.tSimple = TransposicionSimple()
+		self.n = n
+		self.archivoOriginal = archivoOriginal
 	
 	def modoCifrar(self, *argumentos):
 		try:
 			argumentos = list(argumentos)
 			cadena = argumentos[0]
-			n = argumentos[1]
-			cantidadRellenoB64 = argumentos[2]
 		except IndexError:
-			cantidadRellenoB64 = 0
+			pass
 
 		self.tSimple.cadena = cadena
-		self.tSimple.cifrar(cantidadRellenoB64)
+		self.tSimple.cifrar()
 
-		for x in range(0,n):
+		for x in range(0, self.n):
 			self.tSimple.cadena = self.tSimple.textoCifrado.split("\n")
-			self.tSimple.cifrar(cantidadRellenoB64)
+			self.tSimple.cifrar()
+
+		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)[0]
+		self.utilidad.crearArchivo(nombre+".mtd", str(self.n), "a")
 
 		return self.tSimple.textoCifrado
 	
@@ -192,15 +194,17 @@ class ControladorTransposicionSD(ControladorTransposicionTemplate):
 		try:
 			argumentos = list(argumentos)
 			cadena = argumentos[0]
-			n = argumentos[1]
-			cantidadRellenoB64 = argumentos[2]
 		except IndexError:
-			cantidadRellenoB64 = 0
+			pass
+
+		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)[0]
+		n = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r").split("\n")[-1]
+		self.n = int(n)
 
 		self.tSimple.cadena = cadena
-		self.tSimple.descifrar(cantidadRellenoB64)
+		self.tSimple.descifrar()
 
-		for x in range(0,n):
+		for x in range(0, self.n):
 			self.tSimple.cadena = self.tSimple.textoClaro.split("\n")
 			self.tSimple.descifrar()
 
@@ -212,9 +216,10 @@ class ControladorTransposicionGrupo(ControladorTransposicionTemplate):
 	"""
 	Clase concreta que va a implementar el modoCifrar y modoDescifrar de la clase Template.
 	"""
-	def __init__(self, clave, archivoOriginal):
+	def __init__(self, clave=None, archivoOriginal=None):
 		super(ControladorTransposicionGrupo, self).__init__()
-		self.tGrupo = TransposicionGrupo(None, clave, archivoOriginal)
+		self.tGrupo = TransposicionGrupo(None, clave)
+		self.archivoOriginal = archivoOriginal
 
 	def modoCifrar(self, *argumentos):
 		try:
@@ -222,6 +227,9 @@ class ControladorTransposicionGrupo(ControladorTransposicionTemplate):
 			cadena = argumentos[0]
 		except IndexError:
 			pass
+
+		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)[0]
+		self.utilidad.crearArchivo(nombre+".mtd", str(self.tGrupo.clave)+"\n", "a")
 
 		self.tGrupo.cadena = cadena
 		self.tGrupo.cifrar()	
@@ -234,10 +242,12 @@ class ControladorTransposicionGrupo(ControladorTransposicionTemplate):
 		except IndexError:
 			pass
 
-		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.tGrupo.archivoOriginal)[0]
-		relleno = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r").split("\n")[-1]
+		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)[0]
+		relleno = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r").split("\n")[-2]
+		clave = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r").split("\n")[-1]
 		codificacion = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r").split("\n")[2]
 
+		self.tGrupo.clave = int(clave)
 		self.tGrupo.cadena = cadena
 		self.tGrupo.descifrar()
 
@@ -258,26 +268,51 @@ class ControladorTransposicionSerie(ControladorTransposicionTemplate):
 	"""
 	Clase concreta que va a implementar el modoCifrar y modoDescifrar de la clase Template.
 	"""
-	def __init__(self, series):
+	def __init__(self, funciones=None, archivoOriginal=None):
 		super(ControladorTransposicionSerie, self).__init__()
-		self.tSerie = TransposicionSerie(series)
+		'''Funciones es una lista, donde cada posición es una lista de números que 
+		corresponde a una función en particular. Ej: [ [1,2,3,5,7], [4,6,8], [9] ]'''
+		self.tSerie = TransposicionSerie(funciones)
+		self.archivoOriginal = archivoOriginal
 	
 	def modoCifrar(self, *argumentos):
-		pass
+		try:
+			argumentos = list(argumentos)
+			cadena = argumentos[0]
+		except IndexError:
+			pass
+
+		self.tSerie.cadena = cadena
+		self.tSerie.cifrar()
+
+		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)[0]
+		longFunciones = len(self.tSerie.series)
+		i = 0
+		while longFunciones > 0:
+			self.utilidad.crearArchivo(nombre+".mtd", ','.join(self.tSerie.series[i])+"\n", "a")
+			i += 1
+			longFunciones -= 1
+		
+		return self.tSerie.textoCifrado
 
 	def modoDescifrar(self, *argumentos):
-		pass
+		try:
+			argumentos = list(argumentos)
+			cadena = argumentos[0]
+		except IndexError:
+			pass
 
-archivo = sys.argv[1]
-cSD = ControladorTransposicionSD()
-#cSD.cifrarTexto(archivo,0)
-#cSD.descifrarTexto("./salida/PRUEBA.txt.CIF",0)
-#cSD.cifrarArchivo(archivo,0)
-#cSD.descifrarArchivo("./salida/Crepusculo.pdf.CIF",0)
-cG = ControladorTransposicionGrupo(43521, archivo)
-#cG.cifrarTexto(archivo)
-#cG.descifrarTexto("./salida/PRUEBA.txt.CIF")
-#cG.cifrarArchivo(archivo)
-#cG.descifrarArchivo("./salida/Crepusculo.pdf.CIF")
-cS = ControladorTransposicionSerie()
-cS.cifrarTexto()
+		mtds = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)
+		mtds.pop()
+		series = list()
+		i = 0
+		while i < len(mtds):
+			if i > 3:
+				series.append(mtds[i])
+			i += 1
+		self.tSerie.series = series
+
+		self.tSerie.cadena = cadena
+		self.tSerie.descifrar()
+
+		return self.tSerie.textoClaro
