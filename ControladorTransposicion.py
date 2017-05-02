@@ -2,7 +2,6 @@
 # -*- coding: UTF-8 -*-
 
 import os
-#import sys
 
 from Utilidad import Utilidad
 from Transposicion.TransposicionSimple import TransposicionSimple
@@ -13,7 +12,7 @@ class ControladorTransposicionTemplate(object):
 	"""
 	Clase "abstracta" que utiliza el patrón TemplateMethod.
 
-	Los métodos cifrarTexto, cifrarArchivo, descifrarTexto, descifrarArchivo, son métodos que
+	Los métodos cifrarATexto, cifrarArchivoBin, descifrarATexto, descifrarArchivoBin, son métodos que
 	tienen pasos en común, lo único que cambia es el modo en que se va a cifrar los diferentes
 	algoritmos de Transposicion.
 
@@ -29,7 +28,7 @@ class ControladorTransposicionTemplate(object):
 	def modoDescifrar(self, *argumentos):
 		raise NotImplementedError
 	
-	def cifrarTexto(self, archivo):
+	def cifrarATexto(self, archivo):
 		"""
 		Método que se encarga de cifrar un archivo de texto (archvo plano).
 
@@ -55,7 +54,7 @@ class ControladorTransposicionTemplate(object):
 		if cantidadRelleno > 0:
 			self.utilidad.crearArchivo(nombre+".mtd", str(cantidadRelleno), "a")
 
-	def descifrarTexto(self, archivo):
+	def descifrarATexto(self, archivo, archivoClave):
 		"""
 		Método que se encarga de descifrar un archivo de texto (archvo plano).
 
@@ -64,20 +63,18 @@ class ControladorTransposicionTemplate(object):
 		n: la cantidad de iteraciones con la que se desea descifrar el archivo plano.
 		   Por ahora éste parámetro se utiliza para la Transposicion Doble.
 		"""
-		metadatos = self.obtenerArchivoMetadatos(archivo)
+		metadatos = self.utilidad.leerArchivo(archivoClave, "r").split("\n")
 		nombre = metadatos[0]
 		extension = metadatos[1]
 		codificacion = metadatos[2]
 		so = metadatos[3]
 
-		cadena = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+extension+".CIF","r")
-		cadena = cadena.split("\n")
-
-		textoClaro = self.modoDescifrar(cadena)
+		cadena = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+extension+".CIF","r").split("\n")
+		textoClaro = self.modoDescifrar(cadena, metadatos)
 		self.__crearArchivoDescifrado(textoClaro, codificacion, nombre, extension)
 		self.__resolverSaltoLinea(nombre,extension,so)
 	
-	def cifrarArchivo(self, archivo):
+	def cifrarArchivoBin(self, archivo):
 		"""
 		Método que se encarga de cifrar un archivo con codificación binaria.
 
@@ -100,10 +97,10 @@ class ControladorTransposicionTemplate(object):
 		self.utilidad.crearArchivo(nombre+extension+".CIF", criptograma.encode(), "wb")
 
 		cantidadRelleno = len(criptograma) - len(cadenaB64)
-		#if cantidadRelleno > 0:
-		self.utilidad.crearArchivo(nombre+".mtd", str(cantidadRelleno), "a")
+		if cantidadRelleno > 0:
+			self.utilidad.crearArchivo(nombre+".mtd", str(cantidadRelleno), "a")
 	
-	def descifrarArchivo(self, archivo):
+	def descifrarArchivoBin(self, archivo, archivoClave):
 		"""
 		Método que se encarga de descifrar un archivo con codificación binaria.
 
@@ -112,18 +109,19 @@ class ControladorTransposicionTemplate(object):
 		n: la cantidad de iteraciones con la que se desea descifrar el archivo plano.
 		   Por ahora éste parámetro se utiliza para la Transposicion Doble.
 		"""
-		try:
-			metadatos = self.obtenerArchivoMetadatos(archivo)
-			nombre = metadatos[0]
-			extension = metadatos[1]
-		except TypeError as te:
-			print(te , " descifrarArchivo -- Template")
+		metadatos = self.utilidad.leerArchivo(archivoClave, "r").split("\n")
+		nombre = metadatos[0]
+		extension = metadatos[1]
 
 		cadenaB64 = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+extension+".CIF", "r")
 		cadena = list()
 		cadena.append(cadenaB64)
 
-		textoClaro = self.modoDescifrar(cadena)
+		#Algunos archivos como ODT colocan windows o unix
+		if len(metadatos) != 6:
+			metadatos.insert(3, None)
+
+		textoClaro = self.modoDescifrar(cadena, metadatos)
 		textoClaro = self.utilidad.cadena_a_Base64(textoClaro)
 		self.utilidad.crearArchivo(nombre+extension, textoClaro, "wb")
 			
@@ -145,7 +143,7 @@ class ControladorTransposicionTemplate(object):
 	def __crearArchivoDescifrado(self, textoClaro, codificacion, nombre, extension):
 		"""
 		Método que se encarga de crear el ArchivoDescifrado, cambiando la codificación si es
-		necesario. Este método por ahora se usa sólo para descifrarTexto.
+		necesario. Este método por ahora se usa sólo para descifrarATexto.
 		"""
 		self.utilidad.crearArchivo("tmp", textoClaro, "w")
 		self.utilidad.resolverCodificacion("UTF-8", codificacion, self.utilidad.dirSalida+"tmp", nombre+extension)
@@ -154,7 +152,7 @@ class ControladorTransposicionTemplate(object):
 	def __resolverSaltoLinea(self,nombre,extension,so):
 		"""
 		Método que se encarga de resolver el salto de línea, cuando el archivo original era proveniente
-		de un sistema Windos (LF-> CLRF). Este método por ahora se utiliza sólo para descifrarTexto.
+		de un sistema Windos (LF-> CLRF). Este método por ahora se utiliza sólo para descifrarATexto.
 		"""
 		if so == "WINDOWS":
 			direccion = self.utilidad.dirSalida+nombre+extension
@@ -194,11 +192,11 @@ class ControladorTransposicionSD(ControladorTransposicionTemplate):
 		try:
 			argumentos = list(argumentos)
 			cadena = argumentos[0]
+			metadatos = argumentos[1]
 		except IndexError:
 			pass
 
-		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)[0]
-		n = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r").split("\n")[-1]
+		n = metadatos[4]
 		self.n = int(n)
 
 		self.tSimple.cadena = cadena
@@ -239,13 +237,13 @@ class ControladorTransposicionGrupo(ControladorTransposicionTemplate):
 		try:
 			argumentos = list(argumentos)
 			cadena = argumentos[0]
+			metadatos = argumentos[1]
 		except IndexError:
 			pass
 
-		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)[0]
-		relleno = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r").split("\n")[-2]
-		clave = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r").split("\n")[-1]
-		codificacion = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+".mtd", "r").split("\n")[2]
+		clave = metadatos[4]
+		relleno = metadatos[5]
+		codificacion = metadatos[2]
 
 		self.tGrupo.clave = int(clave)
 		self.tGrupo.cadena = cadena
