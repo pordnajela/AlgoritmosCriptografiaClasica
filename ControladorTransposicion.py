@@ -86,7 +86,7 @@ class ControladorTransposicionTemplate(object):
 		#Saltar la excepcion del tipo de variable None
 		try:
 			nombre, extension, codificacion, so = self.utilidad.obtenerMetadatos(archivo)
-			self.utilidad.crearArchivoMetadatos(nombre, nombre, extension, codificacion, so)
+			self.utilidad.crearArchivoMetadatos(nombre, nombre, extension, codificacion)
 		except TypeError:
 			pass
 		
@@ -120,7 +120,7 @@ class ControladorTransposicionTemplate(object):
 		#Algunos archivos como ODT colocan windows o unix
 		if len(metadatos) != 6:
 			metadatos.insert(3, None)
-
+		
 		textoClaro = self.modoDescifrar(cadena, metadatos)
 		textoClaro = self.utilidad.cadena_a_Base64(textoClaro)
 		self.utilidad.crearArchivo(nombre+extension, textoClaro, "wb")
@@ -196,7 +196,7 @@ class ControladorTransposicionSD(ControladorTransposicionTemplate):
 		except IndexError:
 			pass
 
-		n = metadatos[4]
+		n = metadatos[-1]
 		self.n = int(n)
 
 		self.tSimple.cadena = cadena
@@ -238,11 +238,17 @@ class ControladorTransposicionGrupo(ControladorTransposicionTemplate):
 			argumentos = list(argumentos)
 			cadena = argumentos[0]
 			metadatos = argumentos[1]
+			metadatos.pop()
 		except IndexError:
 			pass
 
-		clave = metadatos[4]
-		relleno = metadatos[5]
+		if len(metadatos) < 6:
+			relleno = 0
+			clave = metadatos[-1]
+		else:
+			relleno = metadatos[-1]
+			clave = metadatos[-2]
+			
 		codificacion = metadatos[2]
 
 		self.tGrupo.clave = int(clave)

@@ -3,6 +3,7 @@
 
 import sys
 
+from Utilidad import Utilidad
 from ControladorTransposicion import ControladorTransposicionSD, ControladorTransposicionSerie, ControladorTransposicionGrupo
 
 class ControladorStrategy(object):
@@ -56,7 +57,7 @@ class ControladorATexto(ControladorStrategy):
 		self.cTG = ControladorTransposicionGrupo(None, archivo)
 		self.cTG.descifrarATexto(archivo, archivoClave)
 
-	def descifrarTS(self, archivo, archivoClave):
+	def descifrarcTS(self, archivo, archivoClave):
 		self.cTS = ControladorTransposicionSerie(None, archivo)
 		#Mirar la longitud de las funciones
 		self.cTS.descifrarATexto(archivo, archivoClave)
@@ -87,7 +88,7 @@ class ControladorABin(ControladorStrategy):
 		self.cTG = ControladorTransposicionGrupo(None, archivo)
 		self.cTG.descifrarArchivoBin(archivo, archivoClave)
 
-	def descifrarTS(self, archivo, archivoClave):
+	def descifrarcTS(self, archivo, archivoClave):
 		self.cTS = ControladorTransposicionSerie(None, archivo)
 		#Mirar la longitud de las funciones
 		self.cTS.descifrarArchivoBin(archivo)
@@ -109,33 +110,29 @@ class ControladorABin(ControladorStrategy):
 		return s1, s2
 	'''
 
+def establecerSeries(archivo):
+	utilidad = Utilidad()
+	series = utilidad.leerArchivo(archivo, "r").split("\n")
+	serie = list()
+	funcion = list()
+	for i in series:
+		funcion = i.split(",")
+		serie.append(funcion)
+	return serie
+
 n = sys.argv[1]
 archivo = sys.argv[2]
-cAT = ControladorATexto()
-cAT.cifrarcTSD(n, archivo)
-#cP = ControladorPrincipal(True)
-#cP.cifrarTSD(n, archivo)
-#cP.descifrarTSD("./salida/PRUEBA.txt.CIF", "./salida/PRUEBA.mtd")
-#cP.cifrarcTG(n, archivo)
-#cP.descifrarTG("./salida/Crepusculo.pdf.CIF", "./salida/Crepusculo.mtd")
+#archivo = sys.argv[1]
 serie = list()
-serie.append("2,3,5,7,11,13,17,19,23,27".split(","))
-serie.append("4,6,8,10,12,14,16,18,20,22,24,26".split(","))
-serie.append("1,9,15,21,25".split(","))
+
+#cAT = ControladorABin()
+cAT = ControladorATexto()
+#cAT.cifrarcTSD(n, archivo)
+#cAT.descifrarcTSD("./salida/PRUEBA.txt.CIF", "./salida/PRUEBA.mtd")
+
+cAT.cifrarcTG(int(n), archivo)
+cAT.descifrarcTG("./salida/PRUEBA.txt.CIF", "./salida/PRUEBA.mtd")
+#cAT.cifrarcTS(serie, archivo)
+#cAT.descifrarcTS("./salida/prueba.txt.CIF", "./salida/prueba.mtd")
 #cP.cifrarcTS(serie, archivo)
 #cP.descifrarTS("./salida/prueba.txt.CIF", "./salida/prueba.mtd")
-"""
-'''
-#Contenido del archivo => Ojalaquelluevacafenelcampo
-serie = list()
-serie.append("2,3,5,7,11,13,17,19,23,27".split(","))
-serie.append("4,6,8,10,12,14,16,18,20,22,24,26".split(","))
-serie.append("1,9,15,21,25".split(","))
-'''
-
-#cS = ControladorTransposicionSerie(serie, archivo)
-#cS.cifrarATexto(archivo)
-#cS.descifrarATexto("./salida/prueba.txt.CIF")
-#cS.cifrarArchivoBin(archivo)
-#cS.descifrarArchivoBin("./salida/Crepusculo.pdf.CIF")
-"""

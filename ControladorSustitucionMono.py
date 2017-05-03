@@ -210,7 +210,7 @@ class ControladorCesarSD(ControladorSustitucionMonoTemplate):
 			clave = argumentos[2]
 		except IndexError:
 			cantidadRellenoB64 = 0
-		#return self.playfair.descifrar(cadena[0], cantidadRelleno, clave)
+			
 		self.cesar.cadena = cadena
 		largo = len(cadena)
 		print(largo)
@@ -242,17 +242,12 @@ class ControladorPlayfairSD(ControladorSustitucionMonoTemplate):
 
 	def modoCifrar(self, *argumentos):
 		try:
-			argumentos = list(argumentos)
-			#cadena_aux = argumentos[0].split(" ")
-			#cadena1 = argumentos[0]		
+			argumentos = list(argumentos)	
 			cadena = argumentos[0]	
 			cantidadRellenoB64 = argumentos[1]
 			clave = argumentos[2]			 
 		except IndexError:
 			cantidadRellenoB64 = 0
-
-		#print(self.cesar.cifrar(cadena, n))
-		#return self.playfair.cifrar(cadena[0], cantidadRelleno, clave)
 
 		self.playfair.cadena = cadena
 		largo = len(cadena)
