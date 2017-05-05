@@ -9,7 +9,7 @@ class TransposicionGrupo(object):
 		self.clave = clave
 		self.textoClaro = ""
 		self.textoCifrado = ""
-		self.caracterRelleno = "0" #₫
+		self.caracterRelleno = "₫" #₫
 
 	def cifrar(self, cantidadRellenoB64=0):
 		textoCifrado = ""
@@ -49,6 +49,7 @@ class TransposicionGrupo(object):
 		tamanioLinea = len(linea)-cantidadRellenoB64
 		tamanioBloque = len(str(self.clave))
 
+		#print(tamanioLinea, tamanioBloque)
 		if tamanioLinea % tamanioBloque != 0:
 			lineaNueva = self.adicionarRelleno(linea, tamanioLinea, tamanioBloque)
 			tamanioLinea = len(lineaNueva)

@@ -38,7 +38,6 @@ class ControladorTransposicionTemplate(object):
 		   Por ahora éste parámetro se utiliza para la Transposicion Doble.
 		"""
 		nombre, extension, codificacion, so = self.utilidad.obtenerMetadatos(archivo)
-
 		self.utilidad.crearArchivoMetadatos(nombre, nombre, extension, codificacion, so)
 		self.utilidad.resolverCodificacion(codificacion, "UTF-8", archivo, "tmp")
 
@@ -50,9 +49,11 @@ class ControladorTransposicionTemplate(object):
 
 		self.utilidad.crearArchivo(nombre+extension+".CIF", criptograma, "w")
 
-		cantidadRelleno = len(criptograma) - len(cadena_aux)
+		cantidadRelleno = (len(criptograma) - len(cadena_aux))
 		if cantidadRelleno > 0:
 			self.utilidad.crearArchivo(nombre+".mtd", str(cantidadRelleno), "a")
+		else:
+			self.utilidad.crearArchivo(nombre+".mtd", str(0), "a")
 
 	def descifrarATexto(self, archivo, archivoClave):
 		"""
@@ -96,9 +97,12 @@ class ControladorTransposicionTemplate(object):
 		criptograma = self.modoCifrar(cadena)
 		self.utilidad.crearArchivo(nombre+extension+".CIF", criptograma.encode(), "wb")
 
-		cantidadRelleno = len(criptograma) - len(cadenaB64)
+		cantidadRelleno = (len(criptograma) - len(cadenaB64))
 		if cantidadRelleno > 0:
 			self.utilidad.crearArchivo(nombre+".mtd", str(cantidadRelleno), "a")
+		else:
+			self.utilidad.crearArchivo(nombre+".mtd", str(0), "a")
+		
 	
 	def descifrarArchivoBin(self, archivo, archivoClave):
 		"""
@@ -184,7 +188,7 @@ class ControladorTransposicionSD(ControladorTransposicionTemplate):
 			self.tSimple.cifrar()
 
 		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)[0]
-		self.utilidad.crearArchivo(nombre+".mtd", str(self.n), "a")
+		self.utilidad.crearArchivo(nombre+".mtd", str(self.n)+"\n", "a")
 
 		return self.tSimple.textoCifrado
 	
@@ -196,7 +200,7 @@ class ControladorTransposicionSD(ControladorTransposicionTemplate):
 		except IndexError:
 			pass
 
-		n = metadatos[-1]
+		n = metadatos[-2]
 		self.n = int(n)
 
 		self.tSimple.cadena = cadena
@@ -230,7 +234,7 @@ class ControladorTransposicionGrupo(ControladorTransposicionTemplate):
 		self.utilidad.crearArchivo(nombre+".mtd", str(self.tGrupo.clave)+"\n", "a")
 
 		self.tGrupo.cadena = cadena
-		self.tGrupo.cifrar()	
+		self.tGrupo.cifrar()
 		return self.tGrupo.textoCifrado
 
 	def modoDescifrar(self, *argumentos):
@@ -238,7 +242,6 @@ class ControladorTransposicionGrupo(ControladorTransposicionTemplate):
 			argumentos = list(argumentos)
 			cadena = argumentos[0]
 			metadatos = argumentos[1]
-			metadatos.pop()
 		except IndexError:
 			pass
 
@@ -248,21 +251,29 @@ class ControladorTransposicionGrupo(ControladorTransposicionTemplate):
 		else:
 			relleno = metadatos[-1]
 			clave = metadatos[-2]
-			
-		codificacion = metadatos[2]
-
+		codificacion = [2]
+		
 		self.tGrupo.clave = int(clave)
 		self.tGrupo.cadena = cadena
 		self.tGrupo.descifrar()
 
-		cadena = self.tGrupo.textoClaro
+		cadena = self.tGrupo.textoClaro.split("\n")
+		i = 0
+		nuevaCadena = list()
+		limite = len(cadena[i]) - int(relleno)
 		if self.utilidad.esTxt(codificacion):
-			limite = ( len(cadena)-int(relleno) ) -1
+			longitud = len(cadena)-1
 		else:
-			limite = ( len(cadena)-int(relleno) )
+			longitud = len(cadena)
 
-		cadena = cadena[:limite]+"\n"
-		self.tGrupo.textoClaro = cadena
+		while i < longitud:
+			limite = len(cadena[i]) - int(relleno)
+			nuevaCadena.append(cadena[i][0:limite])
+			i += 1
+
+		nuevaCadena.append("\n")
+		textoClaro = ''.join(nuevaCadena)
+		self.tGrupo.textoClaro = textoClaro
 
 		return self.tGrupo.textoClaro
 

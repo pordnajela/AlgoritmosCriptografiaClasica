@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-import sys
+#import sys
 
 from Utilidad import Utilidad
 from ControladorTransposicion import ControladorTransposicionSD, ControladorTransposicionSerie, ControladorTransposicionGrupo
-from ControladorSustitucionMono import ControladorCesarSD, ControladorPolybiosSD, ControladorPlayfairSD
+#from ControladorSustitucionMono import ControladorCesarSD, ControladorPolybiosSD, ControladorPlayfairSD
 
 
 class ControladorStrategy(object):
@@ -62,6 +62,10 @@ class ControladorATexto(ControladorStrategy):
 	def __init__(self):
 		super(ControladorATexto, self).__init__()
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 	def cifrarcTSD(self, n, archivo):
 		self.cTSD = ControladorTransposicionSD(int(n), archivo)
 		self.cTSD.cifrarATexto(self.cTSD.archivoOriginal)
@@ -88,6 +92,7 @@ class ControladorATexto(ControladorStrategy):
 		#Mirar la longitud de las funciones
 		self.cTS.descifrarATexto(archivo, archivoClave)
 
+<<<<<<< HEAD
 
 
 	def cifrarCS(self, archivo, relleno, clave):
@@ -115,6 +120,8 @@ class ControladorATexto(ControladorStrategy):
 		self.PF = ControladorPlayfairSD()		
 		self.PF.descifrarTexto(archivo, relleno, clave)
 
+=======
+>>>>>>> origin/master
 class ControladorABin(ControladorStrategy):
 	"""docstring for ControladorABin"""
 	def __init__(self):
@@ -145,51 +152,27 @@ class ControladorABin(ControladorStrategy):
 		self.cTS = ControladorTransposicionSerie(None, archivo)
 		#Mirar la longitud de las funciones
 		self.cTS.descifrarArchivoBin(archivo)
-		
-'''
-	def generarFunciones(self, archivo):
-		cadenaB64 = self.cTS.utilidad.obtenerBase64(archivo)
-		longitud = len(cadenaB64)
-		s1 = list()
-		s2 = list()
-		i = 1
-
-		while i <= longitud:
-			if i % 2 == 0:
-				s1.append(str(i))
-			elif i % 2 != 0:
-				s2.append(str(i))
-			i += 1
-		return s1, s2
-	'''
-
-def establecerSeries(archivo):
-	utilidad = Utilidad()
-	series = utilidad.leerArchivo(archivo, "r").split("\n")
-	serie = list()
-	funcion = list()
-	for i in series:
-		funcion = i.split(",")
-		serie.append(funcion)
-	return serie
 
 #n = sys.argv[1]
 #archivo = sys.argv[2]
-archivo = sys.argv[1]
-#serie = list()
+#archivo = sys.argv[1]
 
 #cAT = ControladorABin()
-cAT = ControladorATexto()
+#cAT = ControladorATexto()
 #cAT.cifrarcTSD(n, archivo)
-#cAT.descifrarcTSD("./salida/PRUEBA.txt.CIF", "./salida/PRUEBA.mtd")
+#cAT.descifrarcTSD("./salida/prueba.ppt.CIF", "./salida/prueba.mtd")
 
 #cAT.cifrarcTG(int(n), archivo)
-#cAT.descifrarcTG("./salida/PRUEBA.txt.CIF", "./salida/PRUEBA.mtd")
+#cAT.descifrarcTG("./salida/prueba.ppt.CIF", "./salida/prueba.mtd")
+
+#serie = establecerSeries(n)
 #cAT.cifrarcTS(serie, archivo)
 #cAT.descifrarcTS("./salida/prueba.txt.CIF", "./salida/prueba.mtd")
+
 #cP.cifrarcTS(serie, archivo)
 #cP.descifrarTS("./salida/prueba.txt.CIF", "./salida/prueba.mtd")
 
+<<<<<<< HEAD
 #Pruebas Cesar Polybios Playfair
 #cAT.definirAlfabeto("es_may")
 #cAT.cifrarCS(archivo, 0, 2)
@@ -199,3 +182,8 @@ cAT = ControladorATexto()
 cAT.cifrarPF(archivo, 0, "ABC")
 cAT.descifrarPF("./salida/pruebaPF.txt.CIF", 0, "ABC")
 
+=======
+#pruebas Cesar Polybios Playfair
+#cAT.cifrarCS(archivo, 0, 2)
+#cAT.descifrarCS("./salida/prueba.txt.CIF", 0, 2)
+>>>>>>> origin/master
