@@ -5,7 +5,7 @@ import sys
 
 from Utilidad import Utilidad
 from ControladorTransposicion import ControladorTransposicionSD, ControladorTransposicionSerie, ControladorTransposicionGrupo
-from ControladorSustitucionMono import ControladorCesarSD, ControladorPolybiosSD, ControladorPlayfairSD
+#from ControladorSustitucionMono import ControladorCesarSD, ControladorPolybiosSD, ControladorPlayfairSD
 
 
 class ControladorStrategy(object):
@@ -62,19 +62,6 @@ class ControladorATexto(ControladorStrategy):
 	def __init__(self):
 		super(ControladorATexto, self).__init__()
 
-	def cifrarCS(self, archivo, relleno, clave):
-		self.CS = ControladorCesarSD()
-		self.CS.cifrarTexto(archivo, 0, clave)
-
-	def cifrarPB(self, archivo, relleno, clave):
-		self.PB = ControladorPolybiosSD()
-		self.PF.cifrarTexto(archivo, 0, clave)
-
-	def cifrarCS(self, archivo, relleno, clave):
-		self.PF = ControladorPlayfairSD()
-		self.PF.cifrarTexto(archivo, 0, clave)
-
-
 
 	def cifrarcTSD(self, n, archivo):
 		self.cTSD = ControladorTransposicionSD(int(n), archivo)
@@ -100,19 +87,6 @@ class ControladorATexto(ControladorStrategy):
 	def descifrarcTS(self, archivo, archivoClave):
 		self.cTS = ControladorTransposicionSerie(None, archivo)
 		#Mirar la longitud de las funciones
-		self.cTS.descifrarATexto(archivo, archivoClave)
-
-
-	def descifrarCS(self, archivo, relleno, clave):
-		self.cTSD = ControladorTransposicionSD()
-		self.cTSD.descifrarATexto(archivo, archivoClave)
-
-	def descifrarPB(self, archivo, relleno, clave):
-		self.cTG = ControladorTransposicionGrupo()
-		self.cTG.descifrarATexto(archivo, archivoClave)
-
-	def descifrarPF(self, archivo, relleno, clave):
-		self.cTS = ControladorTransposicionSerie()		
 		self.cTS.descifrarATexto(archivo, archivoClave)
 
 class ControladorABin(ControladorStrategy):
@@ -171,25 +145,28 @@ def establecerSeries(archivo):
 	for i in series:
 		funcion = i.split(",")
 		serie.append(funcion)
+	serie.pop()
 	return serie
 
 #n = sys.argv[1]
 #archivo = sys.argv[2]
-archivo = sys.argv[1]
-#serie = list()
+#archivo = sys.argv[1]
 
 #cAT = ControladorABin()
-cAT = ControladorATexto()
+#cAT = ControladorATexto()
 #cAT.cifrarcTSD(n, archivo)
-#cAT.descifrarcTSD("./salida/PRUEBA.txt.CIF", "./salida/PRUEBA.mtd")
+#cAT.descifrarcTSD("./salida/prueba.ppt.CIF", "./salida/prueba.mtd")
 
 #cAT.cifrarcTG(int(n), archivo)
-#cAT.descifrarcTG("./salida/PRUEBA.txt.CIF", "./salida/PRUEBA.mtd")
+#cAT.descifrarcTG("./salida/prueba.ppt.CIF", "./salida/prueba.mtd")
+
+#serie = establecerSeries(n)
 #cAT.cifrarcTS(serie, archivo)
 #cAT.descifrarcTS("./salida/prueba.txt.CIF", "./salida/prueba.mtd")
+
 #cP.cifrarcTS(serie, archivo)
 #cP.descifrarTS("./salida/prueba.txt.CIF", "./salida/prueba.mtd")
 
-#Pruebas Cesar Polybios Playfair
-cAT.cifrarCS(archivo, 0, 2)
-cAT.descifrarCS("./salida/prueba.txt.CIF", 0, 2)
+#pruebas Cesar Polybios Playfair
+#cAT.cifrarCS(archivo, 0, 2)
+#cAT.descifrarCS("./salida/prueba.txt.CIF", 0, 2)

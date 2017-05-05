@@ -21,6 +21,7 @@ class TransposicionSerie(object):
 				if len(linea) == 0:
 					i += 1
 					break
+				print(self.series[i])
 				linea_a_cifrar += self.aplicarSeries_cifrar(linea, i, len(self.series[i]))
 				i += 1
 
