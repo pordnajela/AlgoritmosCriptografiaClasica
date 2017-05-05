@@ -7,17 +7,13 @@ class Polybios(object):
 	def __init__(self):
 		self.cadena = ''
 		self.textoCifrado = ''
-		self.textoClaro = ''
+		self.textoClaro = ''		
 		self.alfabeto = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'
-		self.alfabeto_en_may = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'
-		self.alfabeto_en_min = 'abcdefghiklmnopqrstuvwxyz'
-		self.alfabeto_num =['11', '12', '13', '14', '15', '21', '22', '23',
+		self.alfabeto_en_may = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'		
+		self.alfabeto_numeros =['11', '12', '13', '14', '15', '21', '22', '23',
 		'24', '25', '31', '32', '33', '34', '35', '41', '41', '43', '44',
-		'45', '51', '52', '53', '54', '55']
-		#self.crear_tabla()
+		'45', '51', '52', '53', '54', '55']		
 		self.tabla = [[0] * 5 for row in range(5)]
-				
-	def crear_tabla(self):
 		tabla = [[0] * 5 for row in range(5)]
 		cont = 0	
 		for y in range(5):
@@ -25,10 +21,9 @@ class Polybios(object):
 				tabla[y][x] = self.alfabeto[cont]
 				cont = cont + 1
 		self.tabla = tabla
-		#return self.tabla
-
+		
+				
 	def definirAlfabeto(self, alfabeto):
-		self.crear_tabla()
 		if(alfabeto== "es_min"):
 			self.alfabeto = copy.copy(self.alfabeto_es_min)
 		if(alfabeto== "es_may"):
@@ -39,7 +34,7 @@ class Polybios(object):
 			self.alfabeto = copy.copy(self.alfabeto_num)
 		if(alfabeto== "b64"):
 			self.alfabeto = copy.copy(self.alfabeto_base64)
-		self.crear_tabla()
+				
 
 	def getStr(x, format='%02s'):
 		return ''.join(format % i for i in x)	
@@ -59,8 +54,9 @@ class Polybios(object):
 					x = str((self.tabla[row].index(ch) + 1))
 					y = str(row + 1)
 					cifrado += y + x
-		self.textoCifrado = cifrado
-		return self.textoCifrado	
+		#self.textoCifrado = cifrado
+		print(cifrado)
+		return cifrado	
 	
 	def descifrar(self, numeros, rellenoB64, tabla):
 		texto = ''
@@ -68,5 +64,7 @@ class Polybios(object):
 			y = int(numeros[index]) - 1
 			x = int(numeros[index + 1]) - 1
 			texto += self.tabla[y][x]
-		self.textoClaro = texto
-		return self.textoClaro
+		#self.textoClaro = texto
+		print(texto)
+		return texto
+		
