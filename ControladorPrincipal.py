@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-import sys
+#import sys
 
 from Utilidad import Utilidad
 from ControladorTransposicion import ControladorTransposicionSD, ControladorTransposicionSerie, ControladorTransposicionGrupo
@@ -119,34 +119,6 @@ class ControladorABin(ControladorStrategy):
 		self.cTS = ControladorTransposicionSerie(None, archivo)
 		#Mirar la longitud de las funciones
 		self.cTS.descifrarArchivoBin(archivo)
-		
-'''
-	def generarFunciones(self, archivo):
-		cadenaB64 = self.cTS.utilidad.obtenerBase64(archivo)
-		longitud = len(cadenaB64)
-		s1 = list()
-		s2 = list()
-		i = 1
-
-		while i <= longitud:
-			if i % 2 == 0:
-				s1.append(str(i))
-			elif i % 2 != 0:
-				s2.append(str(i))
-			i += 1
-		return s1, s2
-	'''
-
-def establecerSeries(archivo):
-	utilidad = Utilidad()
-	series = utilidad.leerArchivo(archivo, "r").split("\n")
-	serie = list()
-	funcion = list()
-	for i in series:
-		funcion = i.split(",")
-		serie.append(funcion)
-	serie.pop()
-	return serie
 
 #n = sys.argv[1]
 #archivo = sys.argv[2]

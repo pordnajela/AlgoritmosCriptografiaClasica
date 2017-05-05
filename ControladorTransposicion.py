@@ -188,7 +188,7 @@ class ControladorTransposicionSD(ControladorTransposicionTemplate):
 			self.tSimple.cifrar()
 
 		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)[0]
-		self.utilidad.crearArchivo(nombre+".mtd", str(self.n), "a")
+		self.utilidad.crearArchivo(nombre+".mtd", str(self.n)+"\n", "a")
 
 		return self.tSimple.textoCifrado
 	
@@ -200,7 +200,7 @@ class ControladorTransposicionSD(ControladorTransposicionTemplate):
 		except IndexError:
 			pass
 
-		n = metadatos[-1]
+		n = metadatos[-2]
 		self.n = int(n)
 
 		self.tSimple.cadena = cadena
