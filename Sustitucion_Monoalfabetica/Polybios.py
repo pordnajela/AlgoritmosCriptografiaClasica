@@ -5,12 +5,16 @@ import copy
 
 class Polybios(object):
 	def __init__(self):
-		self.cadena = ""
+		self.cadena = ''
 		self.textoCifrado = ''
 		self.textoClaro = ''
 		self.alfabeto = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'
 		self.alfabeto_en_may = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'
 		self.alfabeto_en_min = 'abcdefghiklmnopqrstuvwxyz'
+		self.alfabeto_num =['11', '12', '13', '14', '15', '21', '22', '23',
+		'24', '25', '31', '32', '33', '34', '35', '41', '41', '43', '44',
+		'45', '51', '52', '53', '54', '55']
+		#self.crear_tabla()
 		self.tabla = [[0] * 5 for row in range(5)]
 				
 	def crear_tabla(self):
@@ -21,15 +25,18 @@ class Polybios(object):
 				tabla[y][x] = self.alfabeto[cont]
 				cont = cont + 1
 		self.tabla = tabla
-		#return tabla
+		#return self.tabla
 
 	def definirAlfabeto(self, alfabeto):
+		self.crear_tabla()
 		if(alfabeto== "es_min"):
 			self.alfabeto = copy.copy(self.alfabeto_es_min)
 		if(alfabeto== "es_may"):
 			self.alfabeto = copy.copy(self.alfabeto_es_may)
 		if(alfabeto== "en_may"):
 			self.alfabeto = copy.copy(self.alfabeto_en_may)
+		if(alfabeto == "num"):
+			self.alfabeto = copy.copy(self.alfabeto_num)
 		if(alfabeto== "b64"):
 			self.alfabeto = copy.copy(self.alfabeto_base64)
 		self.crear_tabla()
@@ -46,15 +53,14 @@ class Polybios(object):
 	#cadena, cantidadRelleno, clave
 		string = self.tabla
 		cifrado = ''	
-		for ch in palabras.upper():
+		for ch in palabras:
 			for row in range(len(self.tabla)):
 				if ch in self.tabla[row]:
 					x = str((self.tabla[row].index(ch) + 1))
 					y = str(row + 1)
 					cifrado += y + x
-		self.texto_cifrado = cifrado
-		return self.texto_cifrado
-	
+		self.textoCifrado = cifrado
+		return self.textoCifrado	
 	
 	def descifrar(self, numeros, rellenoB64, tabla):
 		texto = ''
@@ -62,12 +68,5 @@ class Polybios(object):
 			y = int(numeros[index]) - 1
 			x = int(numeros[index + 1]) - 1
 			texto += self.tabla[y][x]
-		self.texto_claro = texto
-		return self.texto_claro
-	
-	
-	#tabla = generar_tabla()
-	#imprimir_tabla(tabla)
-	#texto_cifrado = cifrar(tabla, "POLYBIOS")
-	#print(texto_cifrado)
-	#print(descifrado(tabla, texto_cifrado))
+		self.textoClaro = texto
+		return self.textoClaro
