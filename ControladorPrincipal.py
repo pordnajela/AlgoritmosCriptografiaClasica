@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-#import sys
+import sys
 
 from Utilidad import Utilidad
 from ControladorTransposicion import ControladorTransposicionSD, ControladorTransposicionSerie, ControladorTransposicionGrupo
-#from ControladorSustitucionMono import ControladorCesarSD, ControladorPolybiosSD, ControladorPlayfairSD
+from ControladorSustitucionMono import ControladorCesarSD, ControladorPolybiosSD, ControladorPlayfairSD
 
 
 class ControladorStrategy(object):
@@ -17,6 +17,15 @@ class ControladorStrategy(object):
 		self.cTSD = None
 		self.cTG = None
 		self.cTS = None
+
+	def definirAlfabetoCesar(self, alfabeto):
+		raise NotImplementedError
+
+	def definirAlfabetoPolybios(self, alfabeto):
+		raise NotImplementedError
+
+	def definirAlfabetoPlayfair(self, alfabeto):
+		raise NotImplementedError
 
 	def cifrarCS(self, archivo, relleno, clave):
 		raise NotImplementedError
@@ -62,10 +71,19 @@ class ControladorATexto(ControladorStrategy):
 	def __init__(self):
 		super(ControladorATexto, self).__init__()
 
-<<<<<<< HEAD
-=======
+	def definirAlfabetoCesar(self, alfabeto):
+		self.CS = ControladorCesarSD()
+		self.CS.definirAlfabeto(alfabeto)
 
->>>>>>> origin/master
+	def definirAlfabetoPolybios(self, alfabeto):
+		self.PB = ControladorPolybiosSD()
+		self.PB.definirAlfabeto(alfabeto)
+
+	def definirAlfabetoPlayfair(self, alfabeto):
+		self.PF = ControladorPlayfairSD()
+		self.PF.definirAlfabeto(alfabeto)
+
+
 	def cifrarcTSD(self, n, archivo):
 		self.cTSD = ControladorTransposicionSD(int(n), archivo)
 		self.cTSD.cifrarATexto(self.cTSD.archivoOriginal)
@@ -91,8 +109,6 @@ class ControladorATexto(ControladorStrategy):
 		self.cTS = ControladorTransposicionSerie(None, archivo)
 		#Mirar la longitud de las funciones
 		self.cTS.descifrarATexto(archivo, archivoClave)
-
-<<<<<<< HEAD
 
 
 	def cifrarCS(self, archivo, relleno, clave):
@@ -120,8 +136,6 @@ class ControladorATexto(ControladorStrategy):
 		self.PF = ControladorPlayfairSD()		
 		self.PF.descifrarTexto(archivo, relleno, clave)
 
-=======
->>>>>>> origin/master
 class ControladorABin(ControladorStrategy):
 	"""docstring for ControladorABin"""
 	def __init__(self):
@@ -155,10 +169,10 @@ class ControladorABin(ControladorStrategy):
 
 #n = sys.argv[1]
 #archivo = sys.argv[2]
-#archivo = sys.argv[1]
+archivo = sys.argv[1]
 
 #cAT = ControladorABin()
-#cAT = ControladorATexto()
+cAT = ControladorATexto()
 #cAT.cifrarcTSD(n, archivo)
 #cAT.descifrarcTSD("./salida/prueba.ppt.CIF", "./salida/prueba.mtd")
 
@@ -172,18 +186,19 @@ class ControladorABin(ControladorStrategy):
 #cP.cifrarcTS(serie, archivo)
 #cP.descifrarTS("./salida/prueba.txt.CIF", "./salida/prueba.mtd")
 
-<<<<<<< HEAD
 #Pruebas Cesar Polybios Playfair
-#cAT.definirAlfabeto("es_may")
+#cAT.definirAlfabetoCesar("es_may")
 #cAT.cifrarCS(archivo, 0, 2)
 #cAT.descifrarCS("./salida/prueba.txt.CIF", 0,  2)
+#cAT.definirAlfabetoPolybios("en_may")
 #cAT.cifrarPB(archivo, 0, "vvv")
 #cAT.descifrarPB("./salida/pruebaPB.txt.CIF", 0, "vvv")
-cAT.cifrarPF(archivo, 0, "ABC")
-cAT.descifrarPF("./salida/pruebaPF.txt.CIF", 0, "ABC")
+cAT.definirAlfabetoPlayfair("es_may")
+cAT.cifrarPF(archivo, 0, "VWX")
+cAT.descifrarPF("./salida/pruebaPF.txt.CIF", 0, "VWX")
 
-=======
+
 #pruebas Cesar Polybios Playfair
 #cAT.cifrarCS(archivo, 0, 2)
 #cAT.descifrarCS("./salida/prueba.txt.CIF", 0, 2)
->>>>>>> origin/master
+
