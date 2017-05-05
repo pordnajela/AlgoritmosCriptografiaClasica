@@ -26,11 +26,17 @@ class Playfair(object):
         self.alfabeto_es_min=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'l',
         'm', 'n', 'q', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         
+        #self.alfabeto_base64 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+        #'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b',
+        #'d', 'e' 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+        #'u', 'v', 'w', 'k', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+',
+        #'/', ' ']
+
         self.alfabeto_base64 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
         'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b',
-        'd', 'e' 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+        'd', 'e' "'", '[', ']', '=', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
         'u', 'v', 'w', 'k', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+',
-        '/']
+        '/' ' ']
                 
         self.textoCifrado = ""
         self.textoClaro = ""
@@ -82,7 +88,7 @@ class Playfair(object):
         d=self.div
         afila, acolumna = int(self.alfabeto.index(a) / d), self.alfabeto.index(a) % d
         bfila, bcolumna = int(self.alfabeto.index(b) / d), self.alfabeto.index(b) % d
-        if afila == bfila:            
+        if afila == bfila:                    
             return self.alfabeto[afila * d + (acolumna + 1) % d] + self.alfabeto[bfila * d + (bcolumna + 1) % d]
         elif acolumna == bcolumna:
             return self.alfabeto[((afila + 1) % d) * d + acolumna] + self.alfabeto[((bfila + 1) % d) * d + bcolumna]

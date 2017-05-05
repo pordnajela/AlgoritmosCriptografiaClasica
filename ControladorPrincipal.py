@@ -48,33 +48,19 @@ class ControladorStrategy(object):
 		raise NotImplementedError
 
 
-	def descifrarCS(self, archivo, archivoClave):
+	def descifrarCS(self, archivo, relleno, clave):
 		raise NotImplementedError
 
-	def descifrarPB(self, archivo, archivoClave):
+	def descifrarPB(self, archivo, relleno, clave):
 		raise NotImplementedError
 
-	def descifrarPF(self, archivo, archivoClave):
+	def descifrarPF(self, archivo, relleno, clave):
 		raise NotImplementedError
 
 class ControladorATexto(ControladorStrategy):
 	"""docstring for ControladorATexto"""
 	def __init__(self):
 		super(ControladorATexto, self).__init__()
-
-	def cifrarCS(self, archivo, relleno, clave):
-		self.CS = ControladorCesarSD()
-		self.CS.cifrarTexto(archivo, 0, clave)
-
-	def cifrarPB(self, archivo, relleno, clave):
-		self.PB = ControladorPolybiosSD()
-		self.PF.cifrarTexto(archivo, 0, clave)
-
-	def cifrarCS(self, archivo, relleno, clave):
-		self.PF = ControladorPlayfairSD()
-		self.PF.cifrarTexto(archivo, 0, clave)
-
-
 
 	def cifrarcTSD(self, n, archivo):
 		self.cTSD = ControladorTransposicionSD(int(n), archivo)
@@ -103,17 +89,31 @@ class ControladorATexto(ControladorStrategy):
 		self.cTS.descifrarATexto(archivo, archivoClave)
 
 
+
+	def cifrarCS(self, archivo, relleno, clave):
+		self.CS = ControladorCesarSD()
+		self.CS.cifrarTexto(archivo, relleno, clave)
+
+	def cifrarPB(self, archivo, relleno, clave):
+		self.PB = ControladorPolybiosSD()
+		self.PB.cifrarTexto(archivo, relleno, clave)
+
+	def cifrarPF(self, archivo, relleno, clave):
+		self.PF = ControladorPlayfairSD()
+		self.PF.cifrarTexto(archivo, relleno, clave)
+
+
 	def descifrarCS(self, archivo, relleno, clave):
-		self.cTSD = ControladorTransposicionSD()
-		self.cTSD.descifrarATexto(archivo, archivoClave)
+		self.CS = ControladorCesarSD()
+		self.CS.descifrarTexto(archivo, relleno, clave)
 
 	def descifrarPB(self, archivo, relleno, clave):
-		self.cTG = ControladorTransposicionGrupo()
-		self.cTG.descifrarATexto(archivo, archivoClave)
+		self.PB = ControladorPolybiosSD()
+		self.PB.descifrarTexto(archivo, relleno, clave)
 
 	def descifrarPF(self, archivo, relleno, clave):
-		self.cTS = ControladorTransposicionSerie()		
-		self.cTS.descifrarATexto(archivo, archivoClave)
+		self.PF = ControladorPlayfairSD()		
+		self.PF.descifrarTexto(archivo, relleno, clave)
 
 class ControladorABin(ControladorStrategy):
 	"""docstring for ControladorABin"""
@@ -191,5 +191,11 @@ cAT = ControladorATexto()
 #cP.descifrarTS("./salida/prueba.txt.CIF", "./salida/prueba.mtd")
 
 #Pruebas Cesar Polybios Playfair
-cAT.cifrarCS(archivo, 0, 2)
-cAT.descifrarCS("./salida/prueba.txt.CIF", 0, 2)
+#cAT.definirAlfabeto("es_may")
+#cAT.cifrarCS(archivo, 0, 2)
+#cAT.descifrarCS("./salida/prueba.txt.CIF", 0,  2)
+#cAT.cifrarPB(archivo, 0, "vvv")
+#cAT.descifrarPB("./salida/pruebaPB.txt.CIF", 0, "vvv")
+cAT.cifrarPF(archivo, 0, "ABC")
+cAT.descifrarPF("./salida/pruebaPF.txt.CIF", 0, "ABC")
+

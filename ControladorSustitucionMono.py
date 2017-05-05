@@ -21,6 +21,10 @@ class ControladorSustitucionMonoTemplate(object):
 	a utilzar, estos se definen en las clases concretas.
 
 	"""
+
+	def __init__(self):
+		self.utilidad = Utilidad()
+
 	def modoDefinicionAlfabeto(self, *argumentos):
 		raise NotImplementedError
 
@@ -35,7 +39,7 @@ class ControladorSustitucionMonoTemplate(object):
 		self.modoDefinicionAlfabeto(alfabeto)
 		self.modoDefinicionAlfabeto(self.alfabeto)
 	
-	def cifrarTexto(self, archivo, n, clave):
+	def cifrarTexto(self, archivo, relleno, clave):
 		"""
 		Método que se encarga de cifrar un archivo de texto (archvo plano).
 
@@ -54,11 +58,11 @@ class ControladorSustitucionMonoTemplate(object):
 		os.remove(self.utilidad.dirSalida+"tmp")
 		cadena = cadena.split("\n")
 
-		criptograma = self.modoCifrar(cadena, n, clave)
+		criptograma = self.modoCifrar(cadena, relleno, clave)
 
 		self.utilidad.crearArchivo(nombre+extension+".CIF", criptograma, "w")
 
-	def descifrarTexto(self, archivo, n, clave):
+	def descifrarTexto(self, archivo, relleno, clave):
 		"""
 		Método que se encarga de descifrar un archivo de texto (archvo plano).
 
@@ -77,7 +81,7 @@ class ControladorSustitucionMonoTemplate(object):
 		cadena = self.utilidad.leerArchivo(self.utilidad.dirSalida+nombre+extension+".CIF","r")
 		cadena = cadena.split("\n")
 
-		textoClaro = self.modoDescifrar(cadena, n, clave)
+		textoClaro = self.modoDescifrar(cadena, relleno, clave)
 		self.__crearArchivoDescifrado(textoClaro, codificacion, nombre, extension)
 		self.__resolverSaltoLinea(nombre,extension,so)
 
@@ -188,6 +192,7 @@ class ControladorCesarSD(ControladorSustitucionMonoTemplate):
 	Clase concreta que va a implementar el modoCifrar y modoDescifrar de la clase Template.
 	"""
 	def __init__(self):
+		super(ControladorCesarSD, self).__init__()
 		self.cesar = Cesar()
 		self.utilidad = Utilidad()
 
@@ -254,6 +259,7 @@ class ControladorPlayfairSD(ControladorSustitucionMonoTemplate):
 	Clase concreta que va a implementar el modoCifrar y modoDescifrar de la clase Template.
 	"""
 	def __init__(self):
+		super(ControladorPlayfairSD, self).__init__()
 		self.playfair = Playfair()
 		self.utilidad = Utilidad()
 
@@ -316,6 +322,7 @@ class ControladorPolybiosSD(ControladorSustitucionMonoTemplate):
 	Clase concreta que va a implementar el modoCifrar y modoDescifrar de la clase Template.
 	"""
 	def __init__(self):
+		super(ControladorPolybiosSD, self).__init__()
 		self.polybios = Polybios()
 		self.utilidad = Utilidad()
 
@@ -389,11 +396,11 @@ archivo = sys.argv[1]
 
 #Pruebas Playfair
 #cPF = ControladorPlayfairSD()
-#cPF.definirAlfabeto("es_may")
+#cPF.definirAlfabeto("B64")
 #cPF.cifrarTexto(archivo, 0, 'VWXY')
 #cPF.descifrarTexto("./salida/pruebaPF.txt.CIF", 0, 'VWXY')
 #cPF.cifrarArchivo(archivo, 0, 'VWXY')
-#cPF.descifrarArchivo("./salida/prueba.txt.CIF", 0, 'VWXY')
+#cPF.descifrarArchivo("./salida/pruebaPF.txt.CIF", 0, 'VWXY')
 
 #Pruebas Polybios
 cPB = ControladorPolybiosSD()
