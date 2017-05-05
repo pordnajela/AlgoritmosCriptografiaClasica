@@ -377,7 +377,7 @@ class ControladorPolybiosSD(ControladorSustitucionMonoTemplate):
 			alfabeto = "B64"
 		self.polybios.definirAlfabeto(alfabeto)
 
-#archivo = sys.argv[1]
+archivo = sys.argv[1]
 
 #cSD = ControladorTransposicionSD()
 #cSD.cifrarTexto(archivo,0)
@@ -403,9 +403,9 @@ class ControladorPolybiosSD(ControladorSustitucionMonoTemplate):
 #cPF.descifrarArchivo("./salida/pruebaPF.txt.CIF", 0, 'VWXY')
 
 #Pruebas Polybios
-#cPB = ControladorPolybiosSD()
-#cPB.definirAlfabeto("en_may")
-#cPB.cifrarTexto(archivo, 0, 4)
-#cPB.descifrarTexto("./salida/pruebaPB.txt.CIF", 0, 4)
+cPB = ControladorPolybiosSD()
+cPB.definirAlfabeto("en_may")
+cPB.cifrarTexto(archivo, 0, 4)
+cPB.descifrarTexto("./salida/pruebaPB.txt.CIF", 0, 4)
 #cPB.cifrarArchivo(archivo, 0, 'VWXY')
 #cPB.descifrarArchivo("./salida/prueba.txt.CIF", 0, 'VWXY')

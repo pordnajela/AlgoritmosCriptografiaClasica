@@ -190,12 +190,12 @@ cAT = ControladorATexto()
 #cAT.definirAlfabetoCesar("es_may")
 #cAT.cifrarCS(archivo, 0, 2)
 #cAT.descifrarCS("./salida/prueba.txt.CIF", 0,  2)
-#cAT.definirAlfabetoPolybios("en_may")
-#cAT.cifrarPB(archivo, 0, "vvv")
-#cAT.descifrarPB("./salida/pruebaPB.txt.CIF", 0, "vvv")
-cAT.definirAlfabetoPlayfair("es_may")
-cAT.cifrarPF(archivo, 0, "VWX")
-cAT.descifrarPF("./salida/pruebaPF.txt.CIF", 0, "VWX")
+cAT.definirAlfabetoPolybios("en_may")
+cAT.cifrarTexto(archivo, 0, 4)
+cAT.descifrarTexto("./salida/pruebaPB.txt.CIF", 0, 4)
+#cAT.definirAlfabetoPlayfair("es_may")
+#cAT.cifrarPF(archivo, 0, "VWX")
+#cAT.descifrarPF("./salida/pruebaPF.txt.CIF", 0, "VWX")
 
 
 #pruebas Cesar Polybios Playfair
