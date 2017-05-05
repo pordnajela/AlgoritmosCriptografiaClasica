@@ -34,17 +34,17 @@ def main():
 		t_total = t_fin - t_ini
 		print("\nTiempo total: ", str(t_total))
 	elif argv.alg == 'po':
-		
+		controlarPO(argv)
 		t_fin = time.time()
 		t_total = t_fin - t_ini
 		print("\nTiempo total: ", str(t_total))
 	elif argv.alg == 'pl':
-		
+		controlarPL(argv)
 		t_fin = time.time()
 		t_total = t_fin - t_ini
 		print("\nTiempo total: ", str(t_total))
 	elif argv.alg == 'ce':
-		
+		controlarCE(argv)
 		t_fin = time.time()
 		t_total = t_fin - t_ini
 		print("\nTiempo total: ", str(t_total))	
@@ -147,6 +147,49 @@ def controlarTS(argv):
 			cab = ControladorATexto()
 			n = obtenerClaveDesc(argv)
 			cab.descifrarcTS(obtenerTipoEntrada(argv)[0], n)
+
+def controlarPO(argv):
+	itxt, ibin = validarEntradas(argv)
+
+	modo = obtenerModo(argv)
+	if itxt != None:
+		if modo == "cif":
+			cat = ControladorATexto()
+			validarTamanio(obtenerTipoEntrada(argv)[0])
+			cat.cifrarPB(obtenerTipoEntrada(argv)[0], 0, '')
+		if modo == "desc":
+			cab = ControladorATexto()
+			cab.descifrarPB(obtenerTipoEntrada(argv)[0], 0, '')
+
+def controlarPL(argv):
+	itxt, ibin = validarEntradas(argv)
+
+	modo = obtenerModo(argv)
+	if itxt != None:
+		if modo == "cif":
+			cat = ControladorATexto()
+			n = obtenerClaveCif(argv)
+			validarTamanio(obtenerTipoEntrada(argv)[0])
+			cat.cifrarPF(obtenerTipoEntrada(argv)[0], 0, n)
+		if modo == "desc":
+			cab = ControladorATexto()
+			n = obtenerClaveCif(argv)
+			cab.descifrarPF(obtenerTipoEntrada(argv)[0], 0, n)
+
+def controlarCE(argv):
+	itxt, ibin = validarEntradas(argv)
+
+	modo = obtenerModo(argv)
+	if itxt != None:
+		if modo == "cif":
+			cat = ControladorATexto()
+			n = obtenerClaveCif(argv)
+			validarTamanio(obtenerTipoEntrada(argv)[0])
+			cat.cifrarCS(int(n), obtenerTipoEntrada(argv)[0])
+		if modo == "desc":
+			cab = ControladorATexto()
+			n = obtenerClaveDesc(argv)
+			cab.descifrarCS(obtenerTipoEntrada(argv)[0], int(n))
 
 def validarEntradas(argv):
 	itxt, ibin = obtenerTipoEntrada(argv)

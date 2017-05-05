@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-import sys
+#import sys
 
 from Utilidad import Utilidad
 from ControladorTransposicion import ControladorTransposicionSD, ControladorTransposicionSerie, ControladorTransposicionGrupo
@@ -169,10 +169,10 @@ class ControladorABin(ControladorStrategy):
 
 #n = sys.argv[1]
 #archivo = sys.argv[2]
-archivo = sys.argv[1]
+#archivo = sys.argv[1]
 
 #cAT = ControladorABin()
-cAT = ControladorATexto()
+#cAT = ControladorATexto()
 #cAT.cifrarcTSD(n, archivo)
 #cAT.descifrarcTSD("./salida/prueba.ppt.CIF", "./salida/prueba.mtd")
 
@@ -193,9 +193,9 @@ cAT = ControladorATexto()
 #cAT.definirAlfabetoPolybios("en_may")
 #cAT.cifrarPB(archivo, 0, "vvv")
 #cAT.descifrarPB("./salida/pruebaPB.txt.CIF", 0, "vvv")
-cAT.definirAlfabetoPlayfair("es_may")
-cAT.cifrarPF(archivo, 0, "VWX")
-cAT.descifrarPF("./salida/pruebaPF.txt.CIF", 0, "VWX")
+#cAT.definirAlfabetoPlayfair("es_may")
+#cAT.cifrarPF(archivo, 0, "VWX")
+#cAT.descifrarPF("./salida/pruebaPF.txt.CIF", 0, "VWX")
 
 
 #pruebas Cesar Polybios Playfair
