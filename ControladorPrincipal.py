@@ -3,7 +3,7 @@
 
 #import sys
 
-from Utilidad import Utilidad
+#from Utilidad import Utilidad
 from ControladorTransposicion import ControladorTransposicionSD, ControladorTransposicionSerie, ControladorTransposicionGrupo
 from ControladorSustitucionMono import ControladorCesarSD, ControladorPolybiosSD, ControladorPlayfairSD
 
@@ -193,6 +193,9 @@ class ControladorABin(ControladorStrategy):
 #cAT.definirAlfabetoPolybios("en_may")
 #cAT.cifrarPB(archivo, 0, "vvv")
 #cAT.descifrarPB("./salida/pruebaPB.txt.CIF", 0, "vvv")
+#cAT.definirAlfabetoPolybios("en_may")
+#cAT.cifrarTexto(archivo, 0, 4)
+#cAT.descifrarTexto("./salida/pruebaPB.txt.CIF", 0, 4)
 #cAT.definirAlfabetoPlayfair("es_may")
 #cAT.cifrarPF(archivo, 0, "VWX")
 #cAT.descifrarPF("./salida/pruebaPF.txt.CIF", 0, "VWX")
@@ -201,4 +204,3 @@ class ControladorABin(ControladorStrategy):
 #pruebas Cesar Polybios Playfair
 #cAT.cifrarCS(archivo, 0, 2)
 #cAT.descifrarCS("./salida/prueba.txt.CIF", 0, 2)
-

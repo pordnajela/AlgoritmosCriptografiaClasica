@@ -3,7 +3,6 @@
 
 #class Cesar(object):
 
-from itertools import zip_longest
 import copy
 
 class Cesar(object):
@@ -52,7 +51,6 @@ class Cesar(object):
 			self.alfabeto = copy.copy(self.alfabeto_en_may)
 		if(alfabeto== "B64"):
 			self.alfabeto = copy.copy(self.alfabeto_base64)
-		print('alfabeto:', alfabeto)
 
 			
 	def cifrar(self, cadena, cantidadRellenoB64, Avance):
@@ -80,8 +78,7 @@ class Cesar(object):
 					clave = clave + self.alfabeto[Pos]	
 				#if(letra == '='):
 				#	clave = clave + '='			
-		self.textoCifrado = clave		
-		print(self.textoCifrado)
+		self.textoCifrado = clave
 		return self.textoCifrado		
 
 	def descifrar(self, cadena, cantidadRellenoB64, Retroceso):
@@ -110,9 +107,4 @@ class Cesar(object):
 
 		self.textoClaro = clave
 		#self.textoClaro = self.__adicionarRellenoB64(self.textoClaro, cantidadRellenoB64)
-		print(self.textoClaro)
 		return self.textoClaro
-
-
-
-	

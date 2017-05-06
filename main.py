@@ -39,7 +39,7 @@ def main():
 		t_total = t_fin - t_ini
 		print("\nTiempo total: ", str(t_total))
 	elif argv.alg == 'pl':
-		controlarPL(argv)
+		controlarPL(argv)	
 		t_fin = time.time()
 		t_total = t_fin - t_ini
 		print("\nTiempo total: ", str(t_total))
@@ -59,7 +59,7 @@ def inicializarBanderas():
 		\t\t\t\t\t\t\t\t\t\t\t\t4,5,6)
 	po     Sustitución monoalfabética POLYBIOS
 	pl     Sustitución monoalfabética poligrámica digrámica PLAYFAR (clave = archivoTexto con la cadena clave ej:VWXY)
-	ce     Sustitución monoalfabética por desplazamieto CESAR (clave = según el desplazamiento ej: 0,1,2,3,...)""", choices=['ts', 'tg', 'tse', 'po', 'ce'])
+	ce     Sustitución monoalfabética por desplazamieto CESAR (clave = según el desplazamiento ej: 0,1,2,3,...)""", choices=['ts', 'tg', 'tse', 'po', 'pl', 'ce'])
 	parser.add_argument('-kc', '--kcifrar', help='Clave necesaria para cifrar de cada algoritmo (excepto POLYBIOS)', metavar="CLAVE_CIF", default=0)
 	parser.add_argument('-it', '--itxt', help='Archivo de entrada con extension txt', metavar="TXT")
 	parser.add_argument('-ib', '--ibin', help='Archivo de entrada con extension diferente a txt', metavar="BIN")
@@ -150,46 +150,52 @@ def controlarTS(argv):
 
 def controlarPO(argv):
 	itxt, ibin = validarEntradas(argv)
-
+	alfabeto = obtenerAlfabeto(argv)
 	modo = obtenerModo(argv)
 	if itxt != None:
 		if modo == "cif":
 			cat = ControladorATexto()
+			cat.definirAlfabetoPolybios(alfabeto)
 			validarTamanio(obtenerTipoEntrada(argv)[0])
 			cat.cifrarPB(obtenerTipoEntrada(argv)[0], 0, '')
 		if modo == "desc":
 			cab = ControladorATexto()
+			cab.definirAlfabetoPolybios(alfabeto)
 			cab.descifrarPB(obtenerTipoEntrada(argv)[0], 0, '')
 
 def controlarPL(argv):
 	itxt, ibin = validarEntradas(argv)
-
+	alfabeto = obtenerAlfabeto(argv)
 	modo = obtenerModo(argv)
 	if itxt != None:
 		if modo == "cif":
 			cat = ControladorATexto()
+			cat.definirAlfabetoPlayfair(alfabeto)
 			n = obtenerClaveCif(argv)
 			validarTamanio(obtenerTipoEntrada(argv)[0])
 			cat.cifrarPF(obtenerTipoEntrada(argv)[0], 0, n)
 		if modo == "desc":
 			cab = ControladorATexto()
+			cab.definirAlfabetoPlayfair(alfabeto)
 			n = obtenerClaveCif(argv)
 			cab.descifrarPF(obtenerTipoEntrada(argv)[0], 0, n)
 
 def controlarCE(argv):
 	itxt, ibin = validarEntradas(argv)
-
+	alfabeto = obtenerAlfabeto(argv)
 	modo = obtenerModo(argv)
 	if itxt != None:
 		if modo == "cif":
 			cat = ControladorATexto()
 			n = obtenerClaveCif(argv)
+			cat.definirAlfabetoCesar(alfabeto)
 			validarTamanio(obtenerTipoEntrada(argv)[0])
-			cat.cifrarCS(int(n), obtenerTipoEntrada(argv)[0])
+			cat.cifrarCS(obtenerTipoEntrada(argv)[0], 0, int(n))
 		if modo == "desc":
 			cab = ControladorATexto()
+			cab.definirAlfabetoCesar(alfabeto)
 			n = obtenerClaveDesc(argv)
-			cab.descifrarCS(obtenerTipoEntrada(argv)[0], int(n))
+			cab.descifrarCS(obtenerTipoEntrada(argv)[0], 0, int(n))
 
 def validarEntradas(argv):
 	itxt, ibin = obtenerTipoEntrada(argv)
@@ -202,7 +208,7 @@ def obtenerModo(argv):
 	return argv.modo
 
 def obtenerAlfabeto(argv):
-	return argv.alp
+	return argv.alphabet
 
 def obtenerTipoEntrada(argv):
 	return argv.itxt, argv.ibin

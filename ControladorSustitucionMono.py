@@ -2,7 +2,6 @@
 # -*- coding: UTF-8 -*-
 
 import os
-import sys
 
 from Utilidad import Utilidad
 from Sustitucion_Monoalfabetica.Cesar import Cesar
@@ -106,7 +105,6 @@ class ControladorSustitucionMonoTemplate(object):
 		cadena.append(cadenaB64)
 
 		#**************
-		print(cadena)
 		#**************
 
 		criptograma = self.modoCifrar(cadena, 0, clave)
@@ -312,7 +310,6 @@ class ControladorPlayfairSD(ControladorSustitucionMonoTemplate):
 		try:
 			argumentos = list(argumentos)
 			alfabeto = argumentos[0]
-			print (alfabeto)
 		except IndexError:
 			alfabeto = "B64"
 		self.playfair.definirAlfabeto(alfabeto)
