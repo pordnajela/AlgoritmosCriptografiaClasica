@@ -142,6 +142,7 @@ def controlarTS(argv):
 		if modo == "desc":
 			cab = ControladorATexto()
 			n = obtenerClaveDesc(argv)
+			n = establecerSeries(n)
 			cab.descifrarcTS(obtenerTipoEntrada(argv)[0], n)
 
 def controlarPO(argv):

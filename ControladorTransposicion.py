@@ -264,14 +264,6 @@ class ControladorTransposicionSerie(ControladorTransposicionTemplate):
 
 		self.tSerie.cadena = cadena
 		self.tSerie.cifrar()
-
-		nombre = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)[0]
-		longFunciones = len(self.tSerie.series)
-		i = 0
-		while longFunciones > 0:
-			self.utilidad.crearArchivo(nombre+".mtd", ','.join(self.tSerie.series[i])+"\n", "a")
-			i += 1
-			longFunciones -= 1
 		
 		return self.tSerie.textoCifrado
 
@@ -279,20 +271,11 @@ class ControladorTransposicionSerie(ControladorTransposicionTemplate):
 		try:
 			argumentos = list(argumentos)
 			cadena = argumentos[0]
+			clave = argumentos[1]
 		except IndexError:
 			pass
 
-		mtds = ControladorTransposicionTemplate.obtenerArchivoMetadatos(self,self.archivoOriginal)
-		mtds.pop()
-		series = list()
-		i = 0
-		while i < len(mtds):
-			if i > 3:
-				series.append(mtds[i])
-			i += 1
-		self.tSerie.series = series
-
+		self.tSerie.series = clave
 		self.tSerie.cadena = cadena
 		self.tSerie.descifrar()
-
 		return self.tSerie.textoClaro

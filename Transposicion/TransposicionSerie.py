@@ -82,6 +82,7 @@ class TransposicionSerie(object):
 		bloqueDescifrado = ''.join(bloqueDescifrado)
 
 		return bloqueDescifrado
+
 	def concatenarFunciones(self):
 		#[ [], [], [] ]
 		funciones = list()
@@ -90,7 +91,7 @@ class TransposicionSerie(object):
 		i = 0
 		j = 0
 		while i < longSeries:
-			tmp = self.series[i].split(",")
+			tmp = self.series[i]
 			while j < len(tmp):
 				funciones.append(tmp[j])
 				j += 1
