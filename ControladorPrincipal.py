@@ -97,13 +97,13 @@ class ControladorATexto(ControladorStrategy):
 		#Mirar la longitud de las funciones
 		self.cTS.cifrarATexto(archivo)
 
-	def descifrarcTSD(self, archivo, archivoClave):
+	def descifrarcTSD(self, archivo, clave):
 		self.cTSD = ControladorTransposicionSD(None, archivo)
-		self.cTSD.descifrarATexto(archivo, archivoClave)
+		self.cTSD.descifrarATexto(archivo, clave)
 
-	def descifrarcTG(self, archivo, archivoClave):
+	def descifrarcTG(self, archivo, clave):
 		self.cTG = ControladorTransposicionGrupo(None, archivo)
-		self.cTG.descifrarATexto(archivo, archivoClave)
+		self.cTG.descifrarATexto(archivo, clave)
 
 	def descifrarcTS(self, archivo, archivoClave):
 		self.cTS = ControladorTransposicionSerie(None, archivo)

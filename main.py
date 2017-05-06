@@ -22,32 +22,32 @@ def main():
 		controlarTSD(argv)
 		t_fin = time.time()
 		t_total = t_fin - t_ini
-		print("\nTiempo total: ", str(t_total))
+		print("\nTiempo total: %.3f" % t_total+" seg.")
 	elif argv.alg == 'tg':
 		controlarTG(argv)
 		t_fin = time.time()
 		t_total = t_fin - t_ini
-		print("\nTiempo total: ", str(t_total))
+		print("\nTiempo total: %.3f" % t_total+" seg.")
 	elif argv.alg == 'tse':
 		controlarTS(argv)
 		t_fin = time.time()
 		t_total = t_fin - t_ini
-		print("\nTiempo total: ", str(t_total))
+		print("\nTiempo total: %.3f" % t_total+" seg.")
 	elif argv.alg == 'po':
 		controlarPO(argv)
 		t_fin = time.time()
 		t_total = t_fin - t_ini
-		print("\nTiempo total: ", str(t_total))
+		print("\nTiempo total: %.3f" % t_total+" seg.")
 	elif argv.alg == 'pl':
 		controlarPL(argv)	
 		t_fin = time.time()
 		t_total = t_fin - t_ini
-		print("\nTiempo total: ", str(t_total))
+		print("\nTiempo total: %.3f" % t_total+" seg.")
 	elif argv.alg == 'ce':
 		controlarCE(argv)
 		t_fin = time.time()
 		t_total = t_fin - t_ini
-		print("\nTiempo total: ", str(t_total))	
+		print("\nTiempo total: %.3f" % t_total+" seg.")
 
 def inicializarBanderas():
 	parser.add_argument('-m', '--modo', help="""cifrar o descifrar el archivo""", choices=['cif','desc'])
@@ -81,15 +81,15 @@ def controlarTSD(argv):
 			validarTamanio(obtenerTipoEntrada(argv)[0])
 			cat.cifrarcTSD(int(n), obtenerTipoEntrada(argv)[0])
 		if modo == "desc":
-			cab = ControladorATexto()
+			cat = ControladorATexto()
 			n = obtenerClaveDesc(argv)
-			cab.descifrarcTSD(obtenerTipoEntrada(argv)[0], n)
+			cat.descifrarcTSD(obtenerTipoEntrada(argv)[0], n)
 	if ibin != None:
 		if modo == "cif":
-			cat = ControladorABin()
+			cab = ControladorABin()
 			n = obtenerClaveCif(argv)
 			validarTamanio(obtenerTipoEntrada(argv)[1])
-			cat.cifrarcTSD(int(n), obtenerTipoEntrada(argv)[1])
+			cab.cifrarcTSD(int(n), obtenerTipoEntrada(argv)[1])
 		if modo == "desc":
 			cab = ControladorABin()
 			n = obtenerClaveDesc(argv)
@@ -106,18 +106,13 @@ def controlarTG(argv):
 			cat = ControladorATexto()
 			n = obtenerClaveCif(argv)
 			n = establecerGrupos(n)
-
-			bytes =  int(os.stat(obtenerTipoEntrada(argv)[0]).st_size)
-			mb = bytesto(bytes, "m")
-			if mb > 5:
-				print("Sólamente se puede cifrar archivos menores a 5MB")
-				exit(1)
-
+			validarTamanio(obtenerTipoEntrada(argv)[0])
 			cat.cifrarcTG(n, obtenerTipoEntrada(argv)[0])
 		if modo == "desc":
-			cab = ControladorATexto()
+			cat = ControladorATexto()
 			n = obtenerClaveDesc(argv)
-			cab.descifrarcTG(obtenerTipoEntrada(argv)[0], n)
+			n = establecerGrupos(n)
+			cat.descifrarcTG(obtenerTipoEntrada(argv)[0], n)
 	if ibin != None:
 		if modo == "cif":
 			cab = ControladorABin()
@@ -128,6 +123,7 @@ def controlarTG(argv):
 		if modo == "desc":
 			cab = ControladorABin()
 			n = obtenerClaveDesc(argv)
+			n = establecerGrupos(n)
 			cab.descifrarcTG(obtenerTipoEntrada(argv)[1], n)
 
 #Sin archivos BIN
@@ -247,12 +243,6 @@ def validarTamanio(archivo):
 
 #Fragmento tomado de: https://gist.github.com/shawnbutts/3906915
 def bytesto(bytes, to, bsize=1024):
-	"""convert bytes to megabytes, etc.
-	   sample code:
-		   print('mb= ' + str(bytesto(314575262000000, 'm')))
-	   sample output: 
-		   mb= 300002347.946
-	"""
 	a = {'k' : 1, 'm': 2, 'g' : 3, 't' : 4, 'p' : 5, 'e' : 6 }
 	r = float(bytes)
 	for i in range(a[to]):
@@ -260,4 +250,6 @@ def bytesto(bytes, to, bsize=1024):
 	return r
 
 if __name__ == '__main__':
+	if not os.path.exists("./salida/"):
+		os.makedirs("./salida/")
 	main()

@@ -122,14 +122,11 @@ class Utilidad(object):
 	def removerEspacios(self):
 		pass
 
-	def comprobarHash(self,archivoOrigen, archivoDescifrado):
+	def comprobarHash(self,archivo):
 		import hashlib
 		md5sum1 = hashlib.md5()
-		md5sum2 = hashlib.md5()
-		md5sum1.update(self.leerArchivo(archivoOrigen,"rb"))
-		md5sum2.update(self.leerArchivo(archivoDescifrado,"rb"))
-
-		return True if md5sum1.hexdigest() == md5sum2.hexdigest() else False
+		md5sum1.update(self.leerArchivo(archivo,"rb"))
+		return md5sum1.hexdigest()
 
 	def leerArchivo(self, arch, modo):
 		'''

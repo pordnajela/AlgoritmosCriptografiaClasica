@@ -74,6 +74,17 @@ class TransposicionGrupo(object):
 			linea = linea + self.caracterRelleno
 			return self.adicionarRelleno(linea ,len(linea), tamanioBloque)
 
+	def eliminarRelleno(self, cadena):
+		apareceRelleno = 0
+		nuevaLinea = ""
+		if len(cadena) > 1:
+			cadena.pop()
+			
+		for linea in cadena:
+			apareceRelleno = linea.find(self.caracterRelleno)
+			nuevaLinea += linea[0:int(apareceRelleno)] +"\n"
+		return nuevaLinea
+
 	def intercambiar_cifrar(self, bloque, clave):
 		tamanioBloque = len(bloque)
 		claveStr = str(clave)

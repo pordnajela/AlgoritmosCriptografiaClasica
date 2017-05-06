@@ -20,7 +20,6 @@ class ControladorSustitucionMonoTemplate(object):
 	a utilzar, estos se definen en las clases concretas.
 
 	"""
-
 	def __init__(self):
 		self.utilidad = Utilidad()
 
