@@ -91,14 +91,6 @@ class ControladorTransposicionTemplate(object):
 		cadena.append(cadenaB64)
 		criptograma = self.modoCifrar(cadena)
 		self.utilidad.crearArchivo(nombre+extension+".CIF", criptograma.encode(), "wb")
-
-		'''
-		cantidadRelleno = (len(criptograma) - len(cadenaB64))
-		if cantidadRelleno > 0:
-			self.utilidad.crearArchivo(nombre+".mtd", str(cantidadRelleno), "a")
-		else:
-			self.utilidad.crearArchivo(nombre+".mtd", str(0), "a")
-		'''
 		
 	
 	def descifrarArchivoBin(self, archivo, clave):

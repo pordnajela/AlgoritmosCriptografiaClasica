@@ -50,7 +50,7 @@ class AnalisisFrecuencia(object):
 		frec = self.ordenarLetrasComunes(contar)
 		print(frec)
 		
-		posicionE = self.alfUtilizar.index("O")
+		posicionE = self.alfUtilizar.index("E")
 		posicionF = self.alfUtilizar.index(frec[0][0])
 		clave = (posicionF - posicionE)
 
@@ -76,7 +76,7 @@ class AnalisisFrecuencia(object):
 
 
 
-af = AnalisisFrecuencia('ÑU WRXY LYWRDY ÑC EW ZÑBBRDY')
+af = AnalisisFrecuencia('GERF GEVFGRF GVTERF GBZNONA RA GERF GEVFGRF GENFGRF')
 af.establecerAlfbeto("es")
 af.hipotesis()
 '''

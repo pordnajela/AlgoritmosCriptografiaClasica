@@ -157,3 +157,13 @@ class Utilidad(object):
 		criptogramaB64 = texto.encode()
 		criptogramaBin = base64.b64decode(criptogramaB64)
 		return criptogramaBin
+
+	def formatearAlfabeto(self, archAlfabeto):
+		# alfabeto = A,B,C,D,E...
+		alfabeto = self.leerArchivo(archAlfabeto, "r")
+		alfabeto = alfabeto.split("\n")
+		if len(alfabeto) == 2:
+			alfabeto.pop()
+
+		# alfabeto = ['A','B','C'...]
+		return alfabeto[0].split(",")

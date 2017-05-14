@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-from itertools import zip_longest
-
 class TransposicionSimple(object):
 	def __init__(self, cadena=None):
 		self.cadena = cadena
@@ -56,6 +54,7 @@ class TransposicionSimple(object):
 		return textoCifrado
 
 	def __descifrarTexto(self,linea, cantidadRelleno=0):
+		from itertools import zip_longest
 		i = 0
 		longitudCadena = len(linea)-cantidadRelleno
 		mitad = longitudCadena/2

@@ -29,7 +29,6 @@ class TransposicionSerie(object):
 				j += 1
 			else:
 				textoCifrado += linea_a_cifrar
-
 			linea_a_cifrar = ""
 			i = 0
 
@@ -39,7 +38,6 @@ class TransposicionSerie(object):
 		textoDescifrado = ""
 		linea_a_descifrar = ""
 		saltosLinea = len(self.cadena)-1
-		#numFunciones = len(self.series)
 		funciones = self.concatenarFunciones()
 		i = 0
 		j = 0
