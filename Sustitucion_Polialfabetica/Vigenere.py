@@ -22,7 +22,6 @@ class Vigenere(object):
 			else:
 				textoCifrado = textoCifrado + self.aplicarAlgoritmo(modulo, nuevaClave, linea, True)
 		self.textoCifrado = textoCifrado
-		print(textoCifrado)
 
 	def descifrar(self):
 		modulo 			= len(self.alfabeto)
@@ -37,7 +36,6 @@ class Vigenere(object):
 			else:
 				textoDescifrado = textoDescifrado + self.aplicarAlgoritmo(modulo, nuevaClave, linea, False)
 		self.textoClaro = textoDescifrado
-		print(textoDescifrado)
 
 	def adecuarClave(self, linea):
 		nuevaClave = ""
