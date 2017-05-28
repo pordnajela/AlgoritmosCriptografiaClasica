@@ -55,7 +55,6 @@ class AnalisisFrecuencia(object):
 		clave = (posicionF - posicionE)
 
 		if clave < 0:
-			print("Entra")
 			clave = clave + len(self.alfUtilizar)
 
 		print("Posibles claves: ",posicionF, clave)
@@ -73,11 +72,8 @@ class AnalisisFrecuencia(object):
 		return lComunes
 
 
-
-
-
-af = AnalisisFrecuencia('GERF GEVFGRF GVTERF GBZNONA RA GERF GEVFGRF GENFGRF')
-af.establecerAlfbeto("es")
+af = AnalisisFrecuencia('aoljhlzhyjpwolypzvulvmaollhysplzaruvduhukzptwslzajpwolyzpapzhafwlvmzbizapabapvujpwolypudopjolhjoslaalypuaolwshpualeapzzopmalkhjlyahpuubtilyvmwshjlzkvduaolhswohila')
+af.establecerAlfbeto("en")
 af.hipotesis()
 '''
 af = AnalisisFrecuencia()

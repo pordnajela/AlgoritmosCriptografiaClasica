@@ -3,7 +3,7 @@
 
 from ControladorTransposicion import ControladorTransposicionSD, ControladorTransposicionSerie, ControladorTransposicionGrupo
 from ControladorSustitucionMono import ControladorCesarSD, ControladorPolybiosSD, ControladorPlayfairSD
-
+from ControladorSustPoli import ControladorVernam, ControladorVigenere
 
 class ControladorStrategy(object):
 	"""docstring for ControladorStrategy"""
@@ -14,6 +14,8 @@ class ControladorStrategy(object):
 		self.cTSD = None
 		self.cTG = None
 		self.cTS = None
+		self.cVer = None
+		self.cVig = None
 
 	def definirAlfabetoCesar(self, alfabeto):
 		raise NotImplementedError
@@ -33,7 +35,6 @@ class ControladorStrategy(object):
 	def cifrarPF(self, archivo, relleno, clave):
 		raise NotImplementedError
 
-
 	def cifrarcTSD(self, n, archivo):
 		raise NotImplementedError
 
@@ -43,6 +44,14 @@ class ControladorStrategy(object):
 	def cifrarcTS(self, series, archivo):
 		raise NotImplementedError
 
+	def cifrarVern(self, clave, archivo):
+		raise NotImplementedError
+
+	def cifrarVig(self, clave, archivo, alfabeto):
+		raise NotImplementedError
+
+	def cifrarAfin(self, clave, alfabeto, archivo):
+		raise NotImplementedError
 
 	def descifrarcTSD(self, archivo, archivoClave):
 		raise NotImplementedError
@@ -53,7 +62,6 @@ class ControladorStrategy(object):
 	def descifrarTS(self, archivo, archivoClave):
 		raise NotImplementedError
 
-
 	def descifrarCS(self, archivo, relleno, clave):
 		raise NotImplementedError
 
@@ -61,6 +69,15 @@ class ControladorStrategy(object):
 		raise NotImplementedError
 
 	def descifrarPF(self, archivo, relleno, clave):
+		raise NotImplementedError
+
+	def descifrarVern(self, archivo, archivoClave, alfabeto):
+		raise NotImplementedError
+
+	def descifrarVig(self, clave, alfabeto, archivo):
+		raise NotImplementedError
+
+	def descifrarAfin(self, clave, alfabeto, archivo):
 		raise NotImplementedError
 
 class ControladorATexto(ControladorStrategy):
@@ -80,7 +97,7 @@ class ControladorATexto(ControladorStrategy):
 		self.PF = ControladorPlayfairSD()
 		self.PF.definirAlfabeto(alfabeto)
 
-
+		#----------------------------------------------------
 	def cifrarcTSD(self, n, archivo):
 		self.cTSD = ControladorTransposicionSD(int(n), archivo)
 		self.cTSD.cifrarATexto(self.cTSD.archivoOriginal)
@@ -93,6 +110,27 @@ class ControladorATexto(ControladorStrategy):
 		self.cTS = ControladorTransposicionSerie(series, archivo)
 		#Mirar la longitud de las funciones
 		self.cTS.cifrarATexto(archivo)
+
+	def cifrarVern(self, clave, archivo):
+		self.cVer = ControladorVernam(clave)
+		self.cVer.cifrarATexto(archivo)
+
+	def cifrarVig(self, clave, archivo, alfabeto):
+		self.cVig = ControladorVigenere(clave, alfabeto)
+		self.cVig.cifrarATexto(archivo)
+
+	def cifrarCS(self, archivo, relleno, clave):
+		self.CS = ControladorCesarSD()
+		self.CS.cifrarTexto(archivo, relleno, clave)
+
+	def cifrarPB(self, archivo, relleno, clave):
+		self.PB = ControladorPolybiosSD()
+		self.PB.cifrarTexto(archivo, relleno, clave)
+
+	def cifrarPF(self, archivo, relleno, clave):
+		self.PF = ControladorPlayfairSD()
+		self.PF.cifrarTexto(archivo, relleno, clave)
+	#----------------------------------------------------
 
 	def descifrarcTSD(self, archivo, clave):
 		self.cTSD = ControladorTransposicionSD(None, archivo)
@@ -107,19 +145,13 @@ class ControladorATexto(ControladorStrategy):
 		#Mirar la longitud de las funciones
 		self.cTS.descifrarATexto(archivo, archivoClave)
 
+	def descifrarVern(self, archivo, archivoClave, alfabeto):
+		self.cVer = ControladorVernam(archivoClave)
+		self.cVer.descifrarATexto(archivo, archivoClave)
 
-	def cifrarCS(self, archivo, relleno, clave):
-		self.CS = ControladorCesarSD()
-		self.CS.cifrarTexto(archivo, relleno, clave)
-
-	def cifrarPB(self, archivo, relleno, clave):
-		self.PB = ControladorPolybiosSD()
-		self.PB.cifrarTexto(archivo, relleno, clave)
-
-	def cifrarPF(self, archivo, relleno, clave):
-		self.PF = ControladorPlayfairSD()
-		self.PF.cifrarTexto(archivo, relleno, clave)
-
+	def descifrarVig(self, clave, archivo, alfabeto):
+		self.cVig = ControladorVigenere(clave, alfabeto)
+		self.cVig.descifrarATexto(archivo, clave)
 
 	def descifrarCS(self, archivo, relleno, clave):
 		self.CS = ControladorCesarSD()

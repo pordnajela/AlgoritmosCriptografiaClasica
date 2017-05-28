@@ -68,9 +68,9 @@ class Afin(object):
 '''
 alf = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 clave = [15,3]
-#cadena = ["OJALA QUE LLUEVA CAFE EN EL CAMPO"]
-cadena = ["FIDMD JRL MMRLGD HDAL LQ LM HDBUF"]
+cadena = ["OJALA QUE LLUEVA CAFE EN EL CAMPO"]
+#cadena = ["FIDMD JRL MMRLGD HDAL LQ LM HDBUF"]
 af = Afin(clave, alf, cadena)
-#af.cifrar()
-af.descifrar()
+af.cifrar()
+#af.descifrar()
 '''

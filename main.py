@@ -16,41 +16,36 @@ parser._optionals.title = "Argumentos opcionales"
 
 def main():
 	argv = inicializarBanderas()
+	if argv.alg == None:
+		print("Uso: python3 main-py -h")
+		exit(1)
+
 	print("Procesando...")
 	t_ini = time.time()
 	if argv.alg == 'ts':
 		controlarTSD(argv)
-		t_fin = time.time()
-		t_total = t_fin - t_ini
-		print("\nTiempo total: %.3f" % t_total+" seg.")
 	elif argv.alg == 'tg':
 		controlarTG(argv)
-		t_fin = time.time()
-		t_total = t_fin - t_ini
-		print("\nTiempo total: %.3f" % t_total+" seg.")
 	elif argv.alg == 'tse':
 		controlarTS(argv)
-		t_fin = time.time()
-		t_total = t_fin - t_ini
-		print("\nTiempo total: %.3f" % t_total+" seg.")
 	elif argv.alg == 'po':
 		controlarPO(argv)
-		t_fin = time.time()
-		t_total = t_fin - t_ini
-		print("\nTiempo total: %.3f" % t_total+" seg.")
 	elif argv.alg == 'pl':
 		controlarPL(argv)	
-		t_fin = time.time()
-		t_total = t_fin - t_ini
-		print("\nTiempo total: %.3f" % t_total+" seg.")
 	elif argv.alg == 'ce':
 		controlarCE(argv)
-		t_fin = time.time()
-		t_total = t_fin - t_ini
-		print("\nTiempo total: %.3f" % t_total+" seg.")
+	elif argv.alg == 'af':
+		controlarAF(argv)
+	elif argv.alg == 've':
+		controlarVE(argv)
+	elif argv.alg == 'vi':
+		controlarVI(argv)
+		
+	t_fin = time.time()
+	t_total = t_fin - t_ini
+	print("\nTiempo total: %.3f" % t_total+" seg.")
 
 def inicializarBanderas():
-	parser.add_argument('-m', '--modo', help="""cifrar o descifrar el archivo""", choices=['cif','desc'])
 	parser.add_argument('-alg', help="""Algoritmo que se va a utilizar
 	ALGORITMO
 	ts     Transposición SIMPLE (clave = cantidad que desea volver correr el algoritmo ej:0, 1, 2, ...)
@@ -59,11 +54,18 @@ def inicializarBanderas():
 		\t\t\t\t\t\t\t\t\t\t\t\t4,5,6)
 	po     Sustitución monoalfabética POLYBIOS
 	pl     Sustitución monoalfabética poligrámica digrámica PLAYFAR (clave = archivoTexto con la cadena clave ej:VWXY)
-	ce     Sustitución monoalfabética por desplazamieto CESAR (clave = según el desplazamiento ej: 0,1,2,3,...)""", choices=['ts', 'tg', 'tse', 'po', 'pl', 'ce'])
+	ce     Sustitución monoalfabética por desplazamieto CESAR (clave = según el desplazamiento ej: 0,1,2,3,...)
+	af     Sustitución monoalfabética Cifrado Afín (clave = archivoTexto con el valor de 'a' y 'b' ej: 15,3)
+	ve     Sustitución polialfabética Vernam (clave = archivoTexto con caracteres ascii)
+	vi     Sustitución polialfabética Vigenere (clave = archivoTexto con la cadena clave ej:JUAN)
+	fq     Criptoanálisis cifrado cesar por medio de frecuencias.
+	ka     Criptoanálisis cifrado Vigenere por medio del método kasiski
+	""", choices=['ts', 'tg', 'tse', 'po', 'pl', 'ce','af', 've', 'vi'])
+	parser.add_argument('-m', '--modo', help="""cifrar o descifrar el archivo""", choices=['cif','desc'])
 	parser.add_argument('-kc', '--kcifrar', help='Clave necesaria para cifrar de cada algoritmo (excepto POLYBIOS)', metavar="CLAVE_CIF", default=0)
 	parser.add_argument('-it', '--itxt', help='Archivo de entrada con extension txt', metavar="TXT")
 	parser.add_argument('-ib', '--ibin', help='Archivo de entrada con extension diferente a txt', metavar="BIN")
-	parser.add_argument('-alp', '--alphabet', help='Alfabeto con el cual se desea cifrar(inglés - español)', choices=['en_min', 'es_min', 'es_may', 'en_may'], default= "es_may")
+	parser.add_argument('-alf', '--alfabeto', help='Alfabeto con el cual se desea cifrar(archivoTexto con los valores ej:A,B,C,D,...,Z)')
 	parser.add_argument("-kd", "--kdescifrar", help="Clave necesaria para descifrar de cada algoritmo (excepto POLYBIOS)", metavar="KDESC")
 
 	args = parser.parse_args()
@@ -125,6 +127,50 @@ def controlarTG(argv):
 			n = obtenerClaveDesc(argv)
 			n = establecerGrupos(n)
 			cab.descifrarcTG(obtenerTipoEntrada(argv)[1], n)
+
+def controlarVE(argv):
+	itxt, ibin = validarEntradas(argv)
+	modo = obtenerModo(argv)
+
+	if itxt != None:
+		if modo == "cif":
+			validarTamanio(obtenerTipoEntrada(argv)[0])
+			clave = obtenerClaveCif(argv)
+			#clave = establecerAlfabeto(clave)
+			cat = ControladorATexto()
+			cat.cifrarVern(clave, obtenerTipoEntrada(argv)[0])
+		if modo == "desc":
+			validarTamanio(obtenerTipoEntrada(argv)[0])
+			clave = obtenerClaveDesc(argv)
+			#clave = establecerAlfabeto(clave)
+			cat = ControladorATexto()
+			cat.descifrarVern(obtenerTipoEntrada(argv)[0], clave)
+
+def controlarVI(argv):
+	itxt, ibin = validarEntradas(argv)
+	modo = obtenerModo(argv)
+
+	if itxt != None:
+		if modo == "cif":
+			validarTamanio(obtenerTipoEntrada(argv)[0])
+			clave = obtenerClaveCif(argv)
+			alfabeto = obtenerAlfabeto(argv)
+
+			clave = establecerAlfabeto(clave)
+			alfabeto = establecerAlfabeto(alfabeto)
+
+			cat = ControladorATexto()
+			cat.cifrarVig(clave, obtenerTipoEntrada(argv)[0], alfabeto)
+		if modo == "desc":
+			validarTamanio(obtenerTipoEntrada(argv)[0])
+			clave = obtenerClaveDesc(argv)
+			alfabeto = obtenerAlfabeto(argv)
+
+			clave = establecerAlfabeto(clave)
+			alfabeto = establecerAlfabeto(alfabeto)
+
+			cat = ControladorATexto()
+			cat.descifrarVig(clave, obtenerTipoEntrada(argv)[0], alfabeto)
 
 #Sin archivos BIN
 def controlarTS(argv):
@@ -194,6 +240,25 @@ def controlarCE(argv):
 			n = obtenerClaveDesc(argv)
 			cab.descifrarCS(obtenerTipoEntrada(argv)[0], 0, int(n))
 
+def controlarAF(argv):
+	itxt, ibin = validarEntradas(argv)
+	alfabeto = obtenerAlfabeto(argv)
+	alfabeto = establecerAlfabeto(alfabeto)
+	modo = obtenerModo(argv)
+	
+	if itxt != None:
+		if modo == "cif":
+			#cat = ControladorATexto()
+			n = obtenerClaveCif(argv)
+			#cat.definirAlfabetoCesar(alfabeto)
+			validarTamanio(obtenerTipoEntrada(argv)[0])
+			#cat.cifrarCS(obtenerTipoEntrada(argv)[0], 0, n)
+		if modo == "desc":
+			cab = ControladorATexto()
+			cab.definirAlfabetoCesar(alfabeto)
+			n = obtenerClaveDesc(argv)
+			cab.descifrarCS(obtenerTipoEntrada(argv)[0], 0, int(n))
+
 def validarEntradas(argv):
 	itxt, ibin = obtenerTipoEntrada(argv)
 	if itxt == None and ibin == None:
@@ -205,7 +270,7 @@ def obtenerModo(argv):
 	return argv.modo
 
 def obtenerAlfabeto(argv):
-	return argv.alphabet
+	return argv.alfabeto
 
 def obtenerTipoEntrada(argv):
 	return argv.itxt, argv.ibin
@@ -223,7 +288,6 @@ def establecerGrupos(archivo):
 	grupos2 = ''.join(grupos2)
 	return int(grupos2)
 
-
 def establecerSeries(archivo):
 	utilidad = Utilidad()
 	series = utilidad.leerArchivo(archivo, "r").split("\n")
@@ -234,6 +298,11 @@ def establecerSeries(archivo):
 		serie.append(funcion)
 	serie.pop()
 	return serie
+
+def establecerAlfabeto(archivo):
+	utilidad = Utilidad()
+	alfabeto = utilidad.formatearAlfabeto(archivo)
+	return alfabeto
 
 def validarTamanio(archivo):
 	bytes =  int(os.stat(archivo).st_size)

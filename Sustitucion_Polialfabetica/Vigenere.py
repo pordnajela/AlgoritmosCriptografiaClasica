@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 class Vigenere(object):
-	def __init__(self, clave, alfabeto, cadena=None):
+	def __init__(self, clave=None, alfabeto=None, cadena=None):
 		self.cadena 		= cadena #Cada elemento es una línea
 		self.alfabeto 		= alfabeto
 		self.clave 			= clave
