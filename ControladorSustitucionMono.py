@@ -346,60 +346,33 @@ class ControladorAfinSD(ControladorSustitucionMonoTemplate):
 	"""
 	Clase concreta que va a implementar el modoCifrar y modoDescifrar de la clase Template.
 	"""
-	def __init__(self):
+	def __init__(self, clave=None, alfabeto=None):
 		super(ControladorAfinSD, self).__init__()
-		self.afin = Afin()
+		self.clave = clave
+		self.alfabeto = alfabeto
+		self.afin = Afin(clave, alfabeto)
 		self.utilidad = Utilidad()
 
 	def modoCifrar(self, *argumentos):
 		try:
 			argumentos = list(argumentos)
-			clave = argumentos[0]	
-			alfabeto = argumentos[1]
-			cadena = argumentos[2]			 
+			cadena = argumentos[0]
 		except IndexError:
-			cantidadRellenoB64 = 0
+			pass
 
 		self.afin.cadena = cadena
-		largo = len(cadena)
-		for x in range(0, largo):			
-			if(x<largo):
-				self.afin.textoCifrado= self.afin.textoCifrado + self.afin.cifrar(clave, alfabeto, cadena[x]) + "\n"
-			else:
-				self.afin.textoCifrado= self.afin.textoCifrado + self.afin.cifrar(clave, alfabeto, cadena[x])
-				for p in self.afin.cadena:
-						if(p>len(self.afin.cadena - 3)):
-							if(p=='='):									
-								self.afin.textoCifrado = + '='
+		self.afin.cifrar()
 		return self.afin.textoCifrado
-		
-	
+
 	def modoDescifrar(self, *argumentos):
 		try:
 			argumentos = list(argumentos)
-			clave = argumentos[0]	
-			alfabeto = argumentos[1]
-			cadena = argumentos[2]
+			cadena = argumentos[0]
+			clave = argumentos[1]
 		except IndexError:
-			cantidadRellenoB64 = 0
-			
-		self.afin.cadena = cadena
-		largo = len(cadena)
-		for x in range(0, largo):
-			if(x<largo):
-				self.afin.textoClaro= self.afin.textoClaro + self.afin.descifrar(clave, alfabeto, cadena[x]) + "\n" 
-			else:
-				self.afin.textoClaro= self.afin.textoClaro + self.afin.descifrar(clave, alfabeto, cadena[x])
-				for p in self.afin.cadena:
-						if(p>len(self.afin.cadena - 3)):
-							if(p=='='):									
-								self.afin.textoClaro = + '='
-		return self.afin.textoClaro
+			pass
 
-	def modoDefinicionAlfabeto(self, *argumentos):
-		try:
-			argumentos = list(argumentos)
-			alfabeto = argumentos[0]
-		except IndexError:
-			alfabeto = "B64"
-		self.afin.definirAlfabeto(alfabeto)
+		self.afin.cadena = cadena
+		self.afin.clave = clave
+		self.afin.descifrar()
+		return self.afin.textoClaro

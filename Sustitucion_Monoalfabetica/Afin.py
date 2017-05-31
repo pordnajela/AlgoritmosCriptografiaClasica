@@ -49,7 +49,7 @@ class Afin(object):
 		return lineaNueva
 
 	def operacion(self, Mi, mod, cif):
-		if cif:
+		if cif:			
 			return (( self.clave[0] * Mi ) + self.clave[1]) % mod
 		else:
 			i = 1

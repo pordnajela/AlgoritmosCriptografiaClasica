@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+import sys
+
 from ControladorTransposicion import ControladorTransposicionSD, ControladorTransposicionSerie, ControladorTransposicionGrupo
-from ControladorSustitucionMono import ControladorCesarSD, ControladorPolybiosSD, ControladorPlayfairSD
+from ControladorSustitucionMono import ControladorCesarSD, ControladorPolybiosSD, ControladorPlayfairSD, ControladorAfinSD
 from ControladorSustPoli import ControladorVernam, ControladorVigenere
 
 class ControladorStrategy(object):
@@ -11,6 +13,7 @@ class ControladorStrategy(object):
 		self.CS = None
 		self.PB = None
 		self.PF = None
+		self.AF = None
 		self.cTSD = None
 		self.cTG = None
 		self.cTS = None
@@ -97,6 +100,7 @@ class ControladorATexto(ControladorStrategy):
 		self.PF = ControladorPlayfairSD()
 		self.PF.definirAlfabeto(alfabeto)
 
+
 		#----------------------------------------------------
 	def cifrarcTSD(self, n, archivo):
 		self.cTSD = ControladorTransposicionSD(int(n), archivo)
@@ -130,6 +134,10 @@ class ControladorATexto(ControladorStrategy):
 	def cifrarPF(self, archivo, relleno, clave):
 		self.PF = ControladorPlayfairSD()
 		self.PF.cifrarTexto(archivo, relleno, clave)
+
+	def cifrarAfin(self, clave, alfabeto, archivo):
+		self.AF = ControladorAfinSD()
+		self.AF.cifrarTexto(clave, alfabeto, archivo)
 	#----------------------------------------------------
 
 	def descifrarcTSD(self, archivo, clave):
@@ -165,6 +173,10 @@ class ControladorATexto(ControladorStrategy):
 		self.PF = ControladorPlayfairSD()		
 		self.PF.descifrarTexto(archivo, relleno, clave)
 
+	def descifrarAfin(self, clave, alfabeto, archivo):
+		self.AF = ControladorAfinSD()		
+		self.AF.descifrarTexto(clave, alfabeto, archivo)
+
 class ControladorABin(ControladorStrategy):
 	"""docstring for ControladorABin"""
 	def __init__(self):
@@ -195,3 +207,15 @@ class ControladorABin(ControladorStrategy):
 		self.cTS = ControladorTransposicionSerie(None, archivo)
 		#Mirar la longitud de las funciones
 		self.cTS.descifrarArchivoBin(archivo)
+
+
+
+'''
+archivo = sys.argv[1]
+alf = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+clave = [15,3]
+cA = ControladorAfinSD(clave, alf)
+#cadena = ["FIDMD JRL MMRLGD HDAL LQ LM HDBUF"]
+cA.cifrarTexto(archivo, 0, 0)
+cA.descifrarTexto("./salida/prueba.txt.CIF", clave, alf)
+'''
