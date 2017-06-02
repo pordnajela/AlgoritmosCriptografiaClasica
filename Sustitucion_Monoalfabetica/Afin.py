@@ -50,10 +50,10 @@ class Afin(object):
 
 	def operacion(self, Mi, mod, cif):
 		if cif:			
-			return (( self.clave[0] * Mi ) + self.clave[1]) % mod
+			return (( int(self.clave[0]) * Mi ) + int(self.clave[1])) % mod
 		else:
 			i = 1
-			resultado = ( self.clave[0] * i) - mod
+			resultado = ( int(self.clave[0]) * i) - mod
 			return (self.inversoModular(resultado, self.clave[0], mod, i) * (Mi - self.clave[1])) % mod
 
 	def inversoModular(self, resultado, a, b, i):

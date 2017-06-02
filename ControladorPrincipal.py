@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-import sys
-
 from ControladorTransposicion import ControladorTransposicionSD, ControladorTransposicionSerie, ControladorTransposicionGrupo
 from ControladorSustitucionMono import ControladorCesarSD, ControladorPolybiosSD, ControladorPlayfairSD, ControladorAfinSD
 from ControladorSustPoli import ControladorVernam, ControladorVigenere
+from Sustitucion_Monoalfabetica.CriptoanalisisCesar import AnalisisFrecuencia
 
 class ControladorStrategy(object):
 	"""docstring for ControladorStrategy"""
@@ -19,6 +18,7 @@ class ControladorStrategy(object):
 		self.cTS = None
 		self.cVer = None
 		self.cVig = None
+		self.freq = None
 
 	def definirAlfabetoCesar(self, alfabeto):
 		raise NotImplementedError
@@ -136,8 +136,18 @@ class ControladorATexto(ControladorStrategy):
 		self.PF.cifrarTexto(archivo, relleno, clave)
 
 	def cifrarAfin(self, clave, alfabeto, archivo):
-		self.AF = ControladorAfinSD()
-		self.AF.cifrarTexto(clave, alfabeto, archivo)
+		self.AF = ControladorAfinSD(clave, alfabeto)
+		self.AF.cifrarTexto(archivo, 0, 0)
+
+	def frecuencia(self, mensaje):
+		mensaje2 = ''.join(mensaje)
+		af = AnalisisFrecuencia(mensaje2)
+		mensajeNuevo = af.criptonalizar()
+		from Utilidad import Utilidad
+		self.u = Utilidad()
+		self.u.crearArchivo("quijote2.txt", mensajeNuevo, "w")
+		#print(mensajeNuevo)
+
 	#----------------------------------------------------
 
 	def descifrarcTSD(self, archivo, clave):
@@ -174,8 +184,8 @@ class ControladorATexto(ControladorStrategy):
 		self.PF.descifrarTexto(archivo, relleno, clave)
 
 	def descifrarAfin(self, clave, alfabeto, archivo):
-		self.AF = ControladorAfinSD()		
-		self.AF.descifrarTexto(clave, alfabeto, archivo)
+		self.AF = ControladorAfinSD(clave, alfabeto)
+		self.AF.descifrarTexto(archivo, clave, alfabeto)
 
 class ControladorABin(ControladorStrategy):
 	"""docstring for ControladorABin"""

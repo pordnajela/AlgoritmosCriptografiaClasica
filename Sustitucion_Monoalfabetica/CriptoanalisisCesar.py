@@ -3,7 +3,7 @@
 
 import math
 
-from Cesar import Cesar
+from .Cesar import Cesar
 
 class AnalisisFrecuencia(object):
 	"""docstring for AnalisisFrecuencia"""
@@ -67,13 +67,16 @@ class AnalisisFrecuencia(object):
 		cadenas = self.generarPoblacion()
 		fitness = {}
 		tmp = ""
-		for i in range(25):
+		for i in range(26):
 			tmp = cadenas[i]
 			fitness.update({self.calcularFitness(tmp):i})
 
-		#print(sorted(fitness.items())[0])
-		return sorted(fitness.items())[0] 
+		desplazamiento = sorted(fitness.items())[0][1]
+		cadenaNueva = self.cesar.cifrar(self.mensaje.upper(), 0, desplazamiento)
+		return cadenaNueva
 
+'''
 af = AnalisisFrecuencia('qdflr xqd ioru d ruloodv gh xqd ixhqwh pdv sxud txh od ioru gh odloxvlrq b xq kxudfdq wurqfkrod gh uhshqwh fdbhqgr do djxd od suhflrvd ioru')
 #af.establecerAlfbeto("en")
 print(af.criptonalizar())
+'''

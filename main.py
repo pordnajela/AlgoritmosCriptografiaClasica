@@ -40,6 +40,8 @@ def main():
 		controlarVE(argv)
 	elif argv.alg == 'vi':
 		controlarVI(argv)
+	elif argv.alg == 'fq':
+		controlarFQ(argv)
 		
 	t_fin = time.time()
 	t_total = t_fin - t_ini
@@ -60,7 +62,7 @@ def inicializarBanderas():
 	vi     Sustitución polialfabética Vigenere (clave = archivoTexto con la cadena clave ej:JUAN)
 	fq     Criptoanálisis cifrado cesar por medio de frecuencias.
 	ka     Criptoanálisis cifrado Vigenere por medio del método kasiski
-	""", choices=['ts', 'tg', 'tse', 'po', 'pl', 'ce','af', 've', 'vi'])
+	""", choices=['ts', 'tg', 'tse', 'po', 'pl', 'ce','af', 've', 'vi', 'fq'])
 	parser.add_argument('-m', '--modo', help="""cifrar o descifrar el archivo""", choices=['cif','desc'])
 	parser.add_argument('-kc', '--kcifrar', help='Clave necesaria para cifrar de cada algoritmo (excepto POLYBIOS)', metavar="CLAVE_CIF", default=0)
 	parser.add_argument('-it', '--itxt', help='Archivo de entrada con extension txt', metavar="TXT")
@@ -172,6 +174,41 @@ def controlarVI(argv):
 			cat = ControladorATexto()
 			cat.descifrarVig(clave, obtenerTipoEntrada(argv)[0], alfabeto)
 
+def controlarAF(argv):
+	itxt, ibin = validarEntradas(argv)
+	modo = obtenerModo(argv)
+	
+	if itxt != None:
+		if modo == "cif":
+			validarTamanio(obtenerTipoEntrada(argv)[0])
+			clave = obtenerClaveCif(argv)
+			alfabeto = obtenerAlfabeto(argv)
+
+			clave = establecerAlfabeto(clave)
+			alfabeto = establecerAlfabeto(alfabeto)
+
+			cat = ControladorATexto()
+			cat.cifrarAfin(clave, alfabeto, obtenerTipoEntrada(argv)[0])
+		if modo == "desc":
+			validarTamanio(obtenerTipoEntrada(argv)[0])
+			clave = obtenerClaveDesc(argv)
+			alfabeto = obtenerAlfabeto(argv)
+
+			clave = establecerAlfabeto(clave)
+			alfabeto = establecerAlfabeto(alfabeto)
+
+			cat = ControladorATexto()
+			cat.descifrarAfin(clave, alfabeto, obtenerTipoEntrada(argv)[0])
+
+def controlarFQ(argv):
+	itxt, ibin = validarEntradas(argv)
+
+	if itxt != None:
+		validarTamanio(obtenerTipoEntrada(argv)[0])
+		mensaje = establecerAlfabeto(obtenerTipoEntrada(argv)[0])
+		cat = ControladorATexto()
+		cat.frecuencia(mensaje)
+
 #Sin archivos BIN
 def controlarTS(argv):
 	# -alg tse -m cif|desc -kc "series" -it "archivo"
@@ -234,25 +271,6 @@ def controlarCE(argv):
 			cat.definirAlfabetoCesar(alfabeto)
 			validarTamanio(obtenerTipoEntrada(argv)[0])
 			cat.cifrarCS(obtenerTipoEntrada(argv)[0], 0, int(n))
-		if modo == "desc":
-			cab = ControladorATexto()
-			cab.definirAlfabetoCesar(alfabeto)
-			n = obtenerClaveDesc(argv)
-			cab.descifrarCS(obtenerTipoEntrada(argv)[0], 0, int(n))
-
-def controlarAF(argv):
-	itxt, ibin = validarEntradas(argv)
-	alfabeto = obtenerAlfabeto(argv)
-	alfabeto = establecerAlfabeto(alfabeto)
-	modo = obtenerModo(argv)
-	
-	if itxt != None:
-		if modo == "cif":
-			#cat = ControladorATexto()
-			n = obtenerClaveCif(argv)
-			#cat.definirAlfabetoCesar(alfabeto)
-			validarTamanio(obtenerTipoEntrada(argv)[0])
-			#cat.cifrarCS(obtenerTipoEntrada(argv)[0], 0, n)
 		if modo == "desc":
 			cab = ControladorATexto()
 			cab.definirAlfabetoCesar(alfabeto)
